@@ -1,0 +1,193 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap");
+@import "tailwindcss";
+
+:root {
+  --bs-dark: #212529;
+}
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", sans-serif;
+  --font-poppins: "Poppins", sans-serif;
+  --color-brand: #2d2866;
+  --color-brand-hover: #1f1b4d;
+  --color-brand-surface: #e8e7f2;
+  --color-brand-tint: #f8f7fc;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    background: #ffffff;
+    color: #1e293b;
+    font-family: "Plus Jakarta Sans", sans-serif;
+  }
+  button,
+  a,
+  select {
+    -webkit-tap-highlight-color: transparent;
+  }
+  button {
+    cursor: pointer;
+  }
+  select,
+  input {
+    min-width: 0;
+    outline: none;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 9999px;
+    background: #2d2866;
+    padding: 0.75rem 1.5rem;
+    color: white;
+    font-size: 0.875rem;
+    font-weight: 700;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 14px rgba(45, 40, 102, 0.18);
+  }
+  .btn-primary:hover {
+    background: #1f1b4d;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(45, 40, 102, 0.26);
+  }
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 9999px;
+    background: white;
+    padding: 0.7rem 1.25rem;
+    color: #2d2866;
+    font-size: 0.875rem;
+    font-weight: 700;
+    transition: all 0.2s ease;
+  }
+  .btn-secondary:hover {
+    border-color: #cbd5e1;
+    background: #f8f7fc;
+  }
+  .field-label {
+    display: block;
+    margin-bottom: 0.4rem;
+    color: #64748b;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .field-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    min-height: 46px;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.75rem;
+    padding: 0 0.875rem;
+    color: #64748b;
+    background: white;
+    transition: all 0.2s ease;
+  }
+  .field-wrap:focus-within {
+    border-color: #2d2866;
+    box-shadow: 0 0 0 3px rgba(45, 40, 102, 0.12);
+  }
+  .field-wrap input,
+  .field-wrap select {
+    width: 100%;
+    background: transparent;
+    color: #1e293b;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+  .field-wrap select {
+    appearance: none;
+  }
+  .section-pad {
+    padding-top: 5.5rem;
+    padding-bottom: 5.5rem;
+  }
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+/* MyChoize UI Component Specification: .typ_crd */
+.typ_crd {
+  display: block;
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  color: var(--bs-dark, #212529);
+  background-color: rgba(0, 0, 0, 0);
+  border: 1.6px solid rgba(219, 219, 219, 0.45);
+  border-radius: 15px;
+  margin: 10px;
+  cursor: crosshair;
+  transition: 0.8s ease-out;
+  box-sizing: border-box;
+}
+
+.typ_crd:hover {
+  max-height: 450px;
+}
+
+/* MyChoize UI Component Specification: .top_sec */
+.top_sec {
+  position: relative;
+  font-family: Poppins, sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  color: var(--bs-dark, #212529);
+  cursor: crosshair;
+  transition: all;
+  height: 195px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: #ffffff;
+}
+
+.top_sec img {
+  width: 100%;
+  height: 100%;
+  max-height: 175px;
+  object-fit: contain;
+  object-position: center;
+  mix-blend-mode: multiply;
+  transition: transform 0.35s ease;
+  display: block;
+  margin: 0 auto;
+}
+
+@media (max-width: 640px) {
+  .section-pad {
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
