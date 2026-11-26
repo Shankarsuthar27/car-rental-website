@@ -423,10 +423,7 @@ function FleetSection({ onBook, fleet, isLiveFromDb }) {
               <p className="text-sm font-semibold text-slate-500">
                 <b className="text-[#2D2866]">{cars.length}</b> cars available
               </p>
-              <span className="rounded-full bg-emerald-50 px-3.5 py-1 text-xs font-bold text-emerald-700 border border-emerald-100 flex items-center gap-1.5 shadow-sm">
-                <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span>{isLiveFromDb ? "Live Supabase Database" : "Live availability"}</span>
-              </span>
+              
             </div>
             <motion.div layout className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
               <AnimatePresence mode="popLayout">
