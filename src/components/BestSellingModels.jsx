@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { resolveAsset, handleImageFallback } from "../utils/assets";
+import {
+  hyundaiCreta,
+  mahindraScorpio,
+  mahindraXuv300,
+  marutiCiaz,
+  toyotaInnovaCrysta,
+  miniCarSvg,
+  arrowRightSvg,
+} from "../assets/images";
 
 // The 5 core vehicle models in MyChoize fleet
 const baseModels = [
@@ -9,7 +17,7 @@ const baseModels = [
     brand: "Mahindra",
     model: "TUV 300",
     alt: "TUV 300 Car Rental",
-    localImg: "/images/fleets/Mahindra_XUV_300.jpg",
+    localImg: mahindraXuv300,
     remoteImg: "https://www.mychoize.com/mychoize-live/current/files/fleets/Mahindra_XUV_300.jpg",
     link: "https://www.mychoize.com/fleets/mahindra-tuv-300",
   },
@@ -19,7 +27,7 @@ const baseModels = [
     brand: "Hyundai",
     model: "Creta",
     alt: "Creta Car Rental",
-    localImg: "/images/fleets/Hyundai_Creta.jpg",
+    localImg: hyundaiCreta,
     remoteImg: "https://www.mychoize.com/mychoize-live/current/files/fleets/Hyundai_Creta.jpg",
     link: "https://www.mychoize.com/fleets/hyundai-creta",
   },
@@ -29,7 +37,7 @@ const baseModels = [
     brand: "Toyota",
     model: "Innova Crysta",
     alt: "Innova Crysta Car Rental",
-    localImg: "/images/fleets/Toyota_Innova_Crysta.jpg",
+    localImg: toyotaInnovaCrysta,
     remoteImg:
       "https://www.mychoize.com/mychoize-live/current/files/fleets/Toyota_Innova_Crysta.jpg",
     link: "https://www.mychoize.com/fleets/toyota-innova-crysta",
@@ -40,7 +48,7 @@ const baseModels = [
     brand: "Maruti",
     model: "Ciaz",
     alt: "Ciaz Car Rental",
-    localImg: "/images/fleets/Maruti_Ciaz.jpg",
+    localImg: marutiCiaz,
     remoteImg: "https://www.mychoize.com/mychoize-live/current/files/fleets/Maruti_Ciaz.jpg",
     link: "https://www.mychoize.com/fleets/maruti-ciaz",
   },
@@ -50,7 +58,7 @@ const baseModels = [
     brand: "Mahindra",
     model: "Scorpio",
     alt: "Scorpio Car Rental",
-    localImg: "/images/fleets/Mahindra_Scorpio.jpg",
+    localImg: mahindraScorpio,
     remoteImg: "https://www.mychoize.com/mychoize-live/current/files/fleets/Mahindra_Scorpio.jpg",
     link: "https://www.mychoize.com/fleets/mahindra-scorpio",
   },
@@ -469,21 +477,20 @@ export default function BestSellingModels() {
                           <div className="typ_crd">
                             <div className="top_sec">
                               <img
-                                src={resolveAsset(item.localImg)}
+                                src={item.localImg}
                                 alt={item.alt}
                                 onError={(e) => {
-                                  handleImageFallback(e, item.remoteImg);
+                                  if (item.remoteImg && e.currentTarget.src !== item.remoteImg) {
+                                    e.currentTarget.src = item.remoteImg;
+                                  }
                                 }}
                               />
                             </div>
                             <div className="btm_sec pt-3 pb-2">
                               <div className="d-flex align-items-center">
                                 <img
-                                  src={resolveAsset("/images/icons/mini_car.svg")}
+                                  src={miniCarSvg}
                                   alt=""
-                                  onError={(e) => {
-                                    handleImageFallback(e);
-                                  }}
                                 />
                                 <p className="font_size_13_mobile">{item.brand}</p>
                               </div>
@@ -500,12 +507,9 @@ export default function BestSellingModels() {
                                 >
                                   View Details
                                   <img
-                                    src={resolveAsset("/images/icons/arrow_right.svg")}
+                                    src={arrowRightSvg}
                                     className="arrow_img"
                                     alt=""
-                                    onError={(e) => {
-                                      handleImageFallback(e);
-                                    }}
                                   />
                                 </a>
                               </div>

@@ -1,5 +1,11 @@
 import React from "react";
-import { resolveAsset, handleImageFallback } from "../utils/assets";
+import {
+  hyundaiCreta,
+  mahindraScorpio,
+  toyotaInnovaCrysta,
+  miniCarSvg,
+  arrowRightSvg,
+} from "../assets/images";
 
 /**
  * Rebuilt UI Component: `div.top_sec`
@@ -8,7 +14,7 @@ import { resolveAsset, handleImageFallback } from "../utils/assets";
  */
 export function TopSec({
   image = "https://www.mychoize.com/mychoize-live/current/files/fleets/Mahindra_Scorpio.jpg",
-  localImage = "/images/fleets/Mahindra_Scorpio.jpg",
+  localImage = mahindraScorpio,
   alt = "Scorpio Car Rental",
 }) {
   return (
@@ -33,10 +39,12 @@ export function TopSec({
       }}
     >
       <img
-        src={resolveAsset(localImage)}
+        src={localImage}
         alt={alt}
         onError={(e) => {
-          handleImageFallback(e, image);
+          if (image && e.currentTarget.src !== image) {
+            e.currentTarget.src = image;
+          }
         }}
         style={{
           position: "relative",
@@ -62,7 +70,7 @@ export function TopSec({
  */
 export default function MyChoizeCard({
   image = "https://www.mychoize.com/mychoize-live/current/files/fleets/Hyundai_Creta.jpg",
-  localImage = "/images/fleets/Hyundai_Creta.jpg",
+  localImage = hyundaiCreta,
   alt = "Creta Car Rental",
   brand = "Hyundai",
   model = "Creta",
@@ -95,12 +103,9 @@ export default function MyChoizeCard({
           style={{ display: "flex", alignItems: "center" }}
         >
           <img
-            src={resolveAsset("/images/icons/mini_car.svg")}
+            src={miniCarSvg}
             alt=""
             style={{ width: "18px", height: "15px", display: "inline-block" }}
-            onError={(e) => {
-              handleImageFallback(e);
-            }}
           />
           <p
             className="font_size_13_mobile"
@@ -159,13 +164,10 @@ export default function MyChoizeCard({
           >
             View Details
             <img
-              src={resolveAsset("/images/icons/arrow_right.svg")}
+              src={arrowRightSvg}
               className="arrow_img"
               alt=""
               style={{ width: "14px", height: "14px", display: "inline-block" }}
-              onError={(e) => {
-                handleImageFallback(e);
-              }}
             />
           </a>
         </div>
@@ -184,7 +186,7 @@ export function JodhpurFleetGrid() {
       brand: "Mahindra",
       model: "Scorpio",
       alt: "Scorpio Car Rental",
-      localImage: "/images/fleets/Mahindra_Scorpio.jpg",
+      localImage: mahindraScorpio,
       image: "https://www.mychoize.com/mychoize-live/current/files/fleets/Mahindra_Scorpio.jpg",
       link: "https://www.mychoize.com/fleets/mahindra-scorpio",
     },
@@ -193,7 +195,7 @@ export function JodhpurFleetGrid() {
       brand: "Hyundai",
       model: "Creta",
       alt: "Creta Car Rental",
-      localImage: "/images/fleets/Hyundai_Creta.jpg",
+      localImage: hyundaiCreta,
       image: "https://www.mychoize.com/mychoize-live/current/files/fleets/Hyundai_Creta.jpg",
       link: "https://www.mychoize.com/fleets/hyundai-creta",
     },
@@ -202,7 +204,7 @@ export function JodhpurFleetGrid() {
       brand: "Toyota",
       model: "Innova Crysta",
       alt: "Innova Crysta Car Rental",
-      localImage: "/images/fleets/Toyota_Innova_Crysta.jpg",
+      localImage: toyotaInnovaCrysta,
       image: "https://www.mychoize.com/mychoize-live/current/files/fleets/Toyota_Innova_Crysta.jpg",
       link: "https://www.mychoize.com/fleets/toyota-innova-crysta",
     },

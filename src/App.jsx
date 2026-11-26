@@ -31,8 +31,13 @@ import Navbar from "./components/Navbar";
 import HeroSection from "./components/HeroSection";
 import BestSellingModels from "./components/BestSellingModels";
 import { navigate } from "./utils/navigation";
-import logoImg from "./assets/logo";
-import { resolveAsset, handleImageFallback } from "./utils/assets";
+import {
+  jsdHeroSuv,
+  step1Img,
+  step2Img,
+  step3Img,
+  logoImg,
+} from "./assets/images";
 
 const PHONE = "+919783555555";
 const WHATSAPP = "919783555555";
@@ -239,10 +244,14 @@ function VehicleCard({ car, onBook }) {
           {car.year} MODEL
         </span>
         <img
-          src={resolveAsset("/images/jsd-hero-suv.png")}
-          onError={handleImageFallback}
+          src={car.image || jsdHeroSuv}
           alt={`${car.name} rental car`}
-          className="h-full w-full scale-110 object-cover mix-blend-multiply transition duration-500 hover:scale-[1.16]"
+          className="h-full w-full scale-105 object-contain p-2 mix-blend-multiply transition duration-500 hover:scale-115"
+          onError={(e) => {
+            if (e.currentTarget.src !== jsdHeroSuv) {
+              e.currentTarget.src = jsdHeroSuv;
+            }
+          }}
         />
       </div>
       <div className="p-5">
@@ -435,7 +444,7 @@ function HowItWorks() {
       icon: Search,
       title: "Choose your car",
       copy: "Browse our 11-car fleet and pick an hourly or daily plan that fits.",
-      image: "/images/steps/step-1-choose-car.png",
+      image: step1Img,
       tag: "11-Car Fleet",
     },
     {
@@ -443,7 +452,7 @@ function HowItWorks() {
       icon: ShieldCheck,
       title: "Quick KYC & confirm",
       copy: "Share your driving licence and Aadhaar securely on WhatsApp.",
-      image: "/images/steps/step-2-kyc-confirm.png",
+      image: step2Img,
       tag: "Fast WhatsApp Verification",
     },
     {
@@ -451,7 +460,7 @@ function HowItWorks() {
       icon: KeyRound,
       title: "Pick up & drive",
       copy: "Collect at Jalore Main Branch or request doorstep delivery.",
-      image: "/images/steps/step-3-pickup-drive.png",
+      image: step3Img,
       tag: "Doorstep Delivery",
     },
   ];
@@ -476,8 +485,7 @@ function HowItWorks() {
                 {/* Visual Image Banner with Badges */}
                 <div className="relative h-64 sm:h-72 w-full overflow-hidden rounded-2xl bg-slate-50">
                   <img
-                    src={resolveAsset(item.image)}
-                    onError={handleImageFallback}
+                    src={item.image}
                     alt={item.title}
                     className="h-full w-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-105"
                   />

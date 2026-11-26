@@ -3,6 +3,10 @@
   RewriteEngine On
   RewriteBase /
 
+  # If assets/ or images/ are requested with a subpath prefix (e.g. /fleet/assets/ or /fleet/images/), serve directly
+  RewriteRule ^.+/(assets/.*)$ $1 [L,NC]
+  RewriteRule ^.+/(images/.*)$ $1 [L,NC]
+
   # Allow direct access to existing files and directories (images, assets, css, js)
   RewriteCond %{REQUEST_FILENAME} -f [OR]
   RewriteCond %{REQUEST_FILENAME} -d

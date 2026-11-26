@@ -1,3 +1,12 @@
+import {
+  hyundaiCreta,
+  mahindraScorpio,
+  mahindraXuv300,
+  marutiCiaz,
+  toyotaInnovaCrysta,
+  jsdHeroSuv,
+} from "../assets/images";
+
 export const fleetData = [
   {
     id: 1,
@@ -12,6 +21,7 @@ export const fleetData = [
     limit: "300 km/24h",
     branch: "Jalore Main Branch",
     tone: "from-slate-200 to-stone-100",
+    image: mahindraScorpio,
   },
   {
     id: 2,
@@ -26,6 +36,7 @@ export const fleetData = [
     limit: "300 km/24h",
     branch: "Jalore Main Branch",
     tone: "from-blue-100 to-slate-100",
+    image: jsdHeroSuv,
   },
   {
     id: 3,
@@ -40,6 +51,7 @@ export const fleetData = [
     limit: "300 km/24h",
     branch: "Jalore Main Branch",
     tone: "from-rose-100 to-stone-100",
+    image: marutiCiaz,
   },
   {
     id: 4,
@@ -54,6 +66,7 @@ export const fleetData = [
     limit: "300 km/24h",
     branch: "Jalore Main Branch",
     tone: "from-zinc-200 to-stone-100",
+    image: mahindraXuv300,
   },
   {
     id: 5,
@@ -68,6 +81,7 @@ export const fleetData = [
     limit: "300 km/24h",
     branch: "Jalore Main Branch",
     tone: "from-sky-100 to-slate-100",
+    image: hyundaiCreta,
   },
   {
     id: 6,
@@ -82,6 +96,7 @@ export const fleetData = [
     limit: "300 km/24h",
     branch: "Jalore Main Branch",
     tone: "from-orange-100 to-stone-100",
+    image: mahindraScorpio,
   },
   {
     id: 7,
@@ -96,6 +111,7 @@ export const fleetData = [
     limit: "300 km/24h",
     branch: "Jalore Main Branch",
     tone: "from-indigo-100 to-slate-100",
+    image: marutiCiaz,
   },
   {
     id: 8,
@@ -110,6 +126,7 @@ export const fleetData = [
     limit: "300 km/24h",
     branch: "Jalore Main Branch",
     tone: "from-emerald-100 to-stone-100",
+    image: jsdHeroSuv,
   },
   {
     id: 9,
@@ -124,6 +141,7 @@ export const fleetData = [
     limit: "300 km/24h",
     branch: "Jalore Main Branch",
     tone: "from-red-100 to-stone-100",
+    image: marutiCiaz,
   },
   {
     id: 10,
@@ -138,6 +156,7 @@ export const fleetData = [
     limit: "300 km/24h",
     branch: "Jalore Main Branch",
     tone: "from-cyan-100 to-slate-100",
+    image: mahindraXuv300,
   },
   {
     id: 11,
@@ -152,5 +171,6 @@ export const fleetData = [
     limit: "300 km/24h",
     branch: "Jalore Main Branch",
     tone: "from-amber-100 to-stone-100",
+    image: marutiCiaz,
   },
 ];
