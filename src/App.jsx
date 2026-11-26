@@ -54,9 +54,9 @@ const reveal = {
   transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] },
 };
 
-function SectionTitle({ eyebrow, title, copy, light = false }) {
+function SectionTitle({ eyebrow, title, copy, light = false, className = "" }) {
   return (
-    <motion.div {...reveal} className="mx-auto mb-12 max-w-2xl text-center">
+    <motion.div {...reveal} className={`mx-auto mb-12 max-w-2xl text-center ${className}`}>
       <span
         className={`inline-block mb-3 rounded-full px-4 py-1 text-xs font-bold uppercase tracking-[0.16em] ${
           light ? "bg-white/10 text-[#E8E7F2]" : "bg-[#E8E7F2] text-[#2D2866]"
@@ -406,6 +406,7 @@ function FleetSection({ onBook, fleet, isLiveFromDb }) {
           eyebrow="Self-Drive Car Fleet"
           title="Best Selling Cars for Rent in Jalore (Hatchbacks, Sedans & SUVs)"
           copy="Rent a car without driver in Jalore with flexible hourly car rental and daily car rent options. From agile hatchbacks to commanding 7-seater SUVs."
+          className="hidden md:block"
         />
         <button
           onClick={() => setDrawer(true)}
