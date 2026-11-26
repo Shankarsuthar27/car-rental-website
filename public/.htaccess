@@ -3,11 +3,16 @@
   RewriteEngine On
   RewriteBase /
 
+  # Explicitly allow sitemap.xml and robots.txt (including any leading or double slashes)
+  RewriteRule ^/+sitemap\.xml$ sitemap.xml [L]
+  RewriteRule ^/+sitemap_index\.xml$ sitemap_index.xml [L]
+  RewriteRule ^/+robots\.txt$ robots.txt [L]
+
   # If assets/ or images/ are requested with a subpath prefix (e.g. /fleet/assets/ or /fleet/images/), serve directly
   RewriteRule ^.+/(assets/.*)$ $1 [L,NC]
   RewriteRule ^.+/(images/.*)$ $1 [L,NC]
 
-  # Allow direct access to existing files and directories (images, assets, css, js)
+  # Allow direct access to existing files and directories (images, assets, css, js, sitemap)
   RewriteCond %{REQUEST_FILENAME} -f [OR]
   RewriteCond %{REQUEST_FILENAME} -d
   RewriteRule ^ - [L]
@@ -16,8 +21,10 @@
   RewriteRule ^ index.html [L]
 </IfModule>
 
-# Ensure proper MIME types for images, fonts and scripts
+# Ensure proper MIME types for XML, images, fonts and scripts
 <IfModule mod_mime.c>
+  AddType application/xml .xml
+  AddType text/plain .txt
   AddType image/jpeg .jpg .jpeg
   AddType image/png .png
   AddType image/svg+xml .svg
@@ -25,7 +32,15 @@
   AddType image/webp .webp
   AddType text/javascript .js .mjs
   AddType text/css .css
-  AddType application/xml .xml
+</IfModule>
+
+# Allow bots and crawlers to access sitemap without caching issues
+<IfModule mod_headers.c>
+  <FilesMatch "(sitemap\.xml|sitemap_index\.xml|robots\.txt)$">
+    Header set Access-Control-Allow-Origin "*"
+    Header set X-Robots-Tag "all"
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
 </IfModule>
 
 # Enable browser caching for static assets
