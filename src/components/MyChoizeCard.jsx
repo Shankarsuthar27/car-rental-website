@@ -3,7 +3,6 @@ import {
   hyundaiCreta,
   mahindraScorpio,
   toyotaInnovaCrysta,
-  miniCarSvg,
   arrowRightSvg,
 } from "../assets/images";
 
@@ -98,29 +97,19 @@ export default function MyChoizeCard({
     >
       <TopSec image={image} localImage={localImage} alt={alt} />
       <div className="btm_sec pt-3 pb-2" style={{ padding: "14px 16px 8px 16px" }}>
-        <div
-          className="d-flex align-items-center"
-          style={{ display: "flex", alignItems: "center" }}
+        <p
+          className="font_size_13_mobile"
+          style={{
+            fontFamily: "Poppins, sans-serif",
+            fontSize: "13px",
+            margin: "0",
+            color: "#6c757d",
+            fontWeight: 500,
+            lineHeight: 1,
+          }}
         >
-          <img
-            src={miniCarSvg}
-            alt=""
-            style={{ width: "18px", height: "15px", display: "inline-block" }}
-          />
-          <p
-            className="font_size_13_mobile"
-            style={{
-              fontFamily: "Poppins, sans-serif",
-              fontSize: "13px",
-              margin: "0 0 0 6px",
-              color: "#6c757d",
-              fontWeight: 500,
-              lineHeight: 1,
-            }}
-          >
-            {brand}
-          </p>
-        </div>
+          {brand}
+        </p>
         <div
           className="brand_nm font_size_20_mobile"
           style={{

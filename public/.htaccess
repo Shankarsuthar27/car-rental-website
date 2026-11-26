@@ -25,6 +25,7 @@
   AddType image/webp .webp
   AddType text/javascript .js .mjs
   AddType text/css .css
+  AddType application/xml .xml
 </IfModule>
 
 # Enable browser caching for static assets

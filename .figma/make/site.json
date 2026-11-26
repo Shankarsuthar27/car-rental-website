@@ -2,7 +2,7 @@
   "title": "Jalore Self Drive | Self-Drive Car Rental in Jalore",
   "description": "Browse and book self-drive cars in Jalore with flexible hourly and daily rates, fleet filters, local pickup options, and direct WhatsApp support.",
   "robots": {
-    "index": false
+    "index": true
   },
   "accessibility": {
     "addBypassLinks": false,

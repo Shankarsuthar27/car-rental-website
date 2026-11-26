@@ -5,9 +5,9 @@ import {
   mahindraXuv300,
   marutiCiaz,
   toyotaInnovaCrysta,
-  miniCarSvg,
   arrowRightSvg,
 } from "../assets/images";
+import { navigate } from "../utils/navigation";
 
 // The 5 core vehicle models in MyChoize fleet
 const baseModels = [
@@ -19,7 +19,7 @@ const baseModels = [
     alt: "Mahindra TUV 300 SUV rental Jalore",
     localImg: mahindraXuv300,
     remoteImg: "https://www.mychoize.com/mychoize-live/current/files/fleets/Mahindra_XUV_300.jpg",
-    link: "https://www.mychoize.com/fleets/mahindra-tuv-300",
+    link: "/fleet",
   },
   {
     originalIndex: 1,
@@ -29,7 +29,7 @@ const baseModels = [
     alt: "Hyundai Creta self drive car rental in Jalore",
     localImg: hyundaiCreta,
     remoteImg: "https://www.mychoize.com/mychoize-live/current/files/fleets/Hyundai_Creta.jpg",
-    link: "https://www.mychoize.com/fleets/hyundai-creta",
+    link: "/fleet",
   },
   {
     originalIndex: 2,
@@ -40,7 +40,7 @@ const baseModels = [
     localImg: toyotaInnovaCrysta,
     remoteImg:
       "https://www.mychoize.com/mychoize-live/current/files/fleets/Toyota_Innova_Crysta.jpg",
-    link: "https://www.mychoize.com/fleets/toyota-innova-crysta",
+    link: "/fleet",
   },
   {
     originalIndex: 3,
@@ -50,7 +50,7 @@ const baseModels = [
     alt: "Maruti Ciaz sedan car rent Jalore",
     localImg: marutiCiaz,
     remoteImg: "https://www.mychoize.com/mychoize-live/current/files/fleets/Maruti_Ciaz.jpg",
-    link: "https://www.mychoize.com/fleets/maruti-ciaz",
+    link: "/fleet",
   },
   {
     originalIndex: 4,
@@ -60,7 +60,7 @@ const baseModels = [
     alt: "Mahindra Scorpio rent in Jalore",
     localImg: mahindraScorpio,
     remoteImg: "https://www.mychoize.com/mychoize-live/current/files/fleets/Mahindra_Scorpio.jpg",
-    link: "https://www.mychoize.com/fleets/mahindra-scorpio",
+    link: "/fleet",
   },
 ];
 
@@ -247,6 +247,17 @@ export default function BestSellingModels() {
           padding: 12px 18px 4px 18px;
         }
 
+        .jodhpur-carousel .mini_car_icon,
+        .jodhpur-carousel .btm_sec img {
+          width: 18px !important;
+          height: 15px !important;
+          max-width: 18px !important;
+          max-height: 15px !important;
+          display: inline-block !important;
+          flex-shrink: 0 !important;
+          object-fit: contain !important;
+        }
+
         .jodhpur-carousel .d-flex {
           display: flex;
         }
@@ -264,7 +275,7 @@ export default function BestSellingModels() {
           font-size: 14px;
           font-weight: 600;
           color: #5A6B82;
-          margin: 0 0 0 7px;
+          margin: 0;
           line-height: 1;
         }
 
@@ -475,7 +486,7 @@ export default function BestSellingModels() {
                           style={{ width: "100%", display: "inline-block" }}
                         >
                           <div className="typ_crd">
-                            <div className="top_sec">
+                            <div className="top_sec cursor-pointer" onClick={() => navigate("/fleet")}>
                               <img
                                 src={item.localImg}
                                 alt={item.alt}
@@ -487,13 +498,7 @@ export default function BestSellingModels() {
                               />
                             </div>
                             <div className="btm_sec pt-3 pb-2">
-                              <div className="d-flex align-items-center">
-                                <img
-                                  src={miniCarSvg}
-                                  alt=""
-                                />
-                                <p className="font_size_13_mobile">{item.brand}</p>
-                              </div>
+                              <p className="font_size_13_mobile">{item.brand}</p>
                               <div className="brand_nm font_size_20_mobile">{item.model}</div>
                             </div>
                             <div className="mdl_sec pt-0 pb-3">
@@ -501,15 +506,25 @@ export default function BestSellingModels() {
                                 <p className="star text-start"></p>
                                 <a
                                   className="view_details"
-                                  href={item.link}
-                                  target="_blank"
-                                  rel="noreferrer"
+                                  href="/fleet"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    navigate("/fleet");
+                                  }}
                                 >
                                   View Details
                                   <img
                                     src={arrowRightSvg}
                                     className="arrow_img"
                                     alt=""
+                                    style={{
+                                      width: "15px",
+                                      height: "15px",
+                                      maxWidth: "15px",
+                                      maxHeight: "15px",
+                                      display: "inline-block",
+                                      flexShrink: 0,
+                                    }}
                                   />
                                 </a>
                               </div>
