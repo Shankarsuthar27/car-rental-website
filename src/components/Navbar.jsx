@@ -197,16 +197,7 @@ export default function Navbar({ onOpenAuth }) {
             onMouseEnter={() => setSubscriptionDropdown(true)}
             onMouseLeave={() => setSubscriptionDropdown(false)}
           >
-            <button
-              type="button"
-              className="flex items-center gap-1 text-sm font-medium text-slate-700 transition-colors hover:text-[#2D2866]"
-            >
-              Car Subscription
-              <ChevronDown
-                size={14}
-                className={`transition-transform duration-200 ${subscriptionDropdown ? "rotate-180 text-[#2D2866]" : ""}`}
-              />
-            </button>
+            
             <AnimatePresence>
               {subscriptionDropdown && (
                 <motion.div

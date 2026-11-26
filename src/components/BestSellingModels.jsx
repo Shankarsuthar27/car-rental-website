@@ -570,6 +570,10 @@ export default function BestSellingModels() {
                     : item.name;
                   const displayModel = formatTitleCase(modelPart);
                   const displayImage = item.image || item.fallbackImage || jsdHeroSuv;
+                  const normalizedStatus = String(item.status || "available").trim().toLowerCase();
+                  const onTrip =
+                    item.isOnTrip ??
+                    (normalizedStatus !== "available" && normalizedStatus !== "maintenance");
 
                   return (
                     <div
@@ -592,6 +596,12 @@ export default function BestSellingModels() {
                               className="top_sec cursor-pointer"
                               onClick={(e) => handleNavClick(e, "/fleet")}
                             >
+                              {onTrip && (
+                                <span className="absolute left-3 top-3 z-10 inline-flex items-center gap-1.5 rounded-full bg-amber-600 px-2.5 py-1 text-[10px] font-black tracking-wider text-white shadow-sm uppercase">
+                                  <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
+                                  <span>ON TRIP</span>
+                                </span>
+                              )}
                               <img
                                 src={displayImage}
                                 alt={`${displayBrand} ${displayModel} car rental in Jalore`}

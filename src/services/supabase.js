@@ -90,6 +90,12 @@ function mapSegment(vehicleType = "", model = "") {
   return "SUV";
 }
 
+export function isCarOnTrip(status = "available") {
+  const s = String(status || "available").trim().toLowerCase();
+  if (!s || s === "available" || s === "maintenance") return false;
+  return true;
+}
+
 // Format raw Supabase vehicle into our clean UI model
 export function transformVehicle(v, index = 0) {
   const rawFuel = (v.fuel_type || "petrol").toLowerCase();
@@ -131,6 +137,7 @@ export function transformVehicle(v, index = 0) {
     supabaseImage,
     fallbackImage,
     status: v.status || "available",
+    isOnTrip: isCarOnTrip(v.status),
     isActive: v.is_active !== false,
     registrationNumber: v.registration_number,
     features: Array.isArray(v.features) ? v.features : [],

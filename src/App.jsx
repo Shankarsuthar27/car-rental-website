@@ -243,6 +243,23 @@ function Filters({ filters, setFilters, clear, fleet = fleetData }) {
 }
 
 function VehicleCard({ car, onBook }) {
+  const normalizedStatus = String(car.status || "available").trim().toLowerCase();
+  const isAvailable = normalizedStatus === "available";
+  const isMaintenance = normalizedStatus === "maintenance";
+  const onTrip = car.isOnTrip ?? (!isAvailable && !isMaintenance);
+
+  const badgeLabel = isAvailable
+    ? "AVAILABLE"
+    : isMaintenance
+      ? "MAINTENANCE"
+      : "ON TRIP";
+
+  const badgeColor = isAvailable
+    ? "bg-emerald-600"
+    : isMaintenance
+      ? "bg-slate-600"
+      : "bg-amber-600";
+
   return (
     <motion.article
       layout
@@ -254,11 +271,10 @@ function VehicleCard({ car, onBook }) {
     >
       <div className="relative h-48 overflow-hidden bg-white border-b border-slate-100">
         <span
-          className={`absolute left-3 top-3 z-10 rounded-full px-3 py-1 text-[10px] font-black tracking-wider text-white shadow-sm uppercase ${
-            car.status === "available" ? "bg-emerald-600" : "bg-amber-600"
-          }`}
+          className={`absolute left-3 top-3 z-10 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[10px] font-black tracking-wider text-white shadow-sm uppercase ${badgeColor}`}
         >
-          {car.status || "AVAILABLE"}
+          {onTrip && <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />}
+          <span>{badgeLabel}</span>
         </span>
         <span className="absolute right-3 top-3 z-10 rounded-full bg-white/95 border border-slate-100 px-3 py-1 text-[11px] font-extrabold text-[#2D2866] shadow-sm backdrop-blur">
           {car.year} MODEL

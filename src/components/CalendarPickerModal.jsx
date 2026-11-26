@@ -305,7 +305,7 @@ export default function CalendarPickerModal({
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: 8, scale: 0.98 }}
       transition={{ duration: 0.22, ease: "easeOut" }}
-      className="relative w-full max-w-[700px] overflow-hidden rounded-[24px] border border-[#DDD9EE] bg-[#EEEDF8] p-6 sm:p-7 shadow-[0_16px_50px_rgba(45,40,102,0.16)] text-[#2D2866]"
+      className="relative w-full max-w-[340px] sm:max-w-[700px] mx-auto overflow-hidden rounded-[18px] sm:rounded-[24px] border border-[#DDD9EE] bg-[#EEEDF8] p-3.5 sm:p-7 shadow-[0_16px_50px_rgba(45,40,102,0.16)] text-[#2D2866]"
       onClick={(e) => e.stopPropagation()}
     >
       {/* Close button */}
@@ -313,13 +313,13 @@ export default function CalendarPickerModal({
         type="button"
         aria-label="Close"
         onClick={onClose}
-        className="absolute top-4 right-4 z-20 flex h-7 w-7 items-center justify-center rounded-full bg-white/70 text-slate-500 hover:bg-white hover:text-[#2D2866] transition-colors shadow-xs"
+        className="absolute top-2.5 right-2.5 sm:top-4 sm:right-4 z-20 flex h-6 w-6 sm:h-7 sm:w-7 items-center justify-center rounded-full bg-white/70 text-slate-500 hover:bg-white hover:text-[#2D2866] transition-colors shadow-xs"
       >
-        <X size={15} />
+        <X size={14} />
       </button>
 
       {/* Mode Switcher Tabs (Pick-up / Return) */}
-      <div className="mb-4 flex items-center gap-2 border-b border-[#E2E0EE]/70 pb-3">
+      <div className="mb-2.5 sm:mb-4 flex items-center gap-1.5 sm:gap-2 border-b border-[#E2E0EE]/70 pb-2 sm:pb-3 pr-7 sm:pr-0">
         <button
           type="button"
           onClick={() => {
@@ -327,7 +327,7 @@ export default function CalendarPickerModal({
             setViewYear(pickDate.getFullYear());
             setViewMonth(pickDate.getMonth());
           }}
-          className={`text-sm font-bold tracking-tight px-3 py-1.5 rounded-full transition-all ${
+          className={`text-[11px] sm:text-sm font-bold tracking-tight px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full transition-all ${
             activeMode === "pickup"
               ? "bg-[#2D2866] text-white shadow-xs"
               : "text-[#706C8F] hover:text-[#2D2866] hover:bg-white/60"
@@ -335,7 +335,7 @@ export default function CalendarPickerModal({
         >
           Pick-up date & time
         </button>
-        <span className="text-slate-300">•</span>
+        <span className="text-slate-300 text-xs">•</span>
         <button
           type="button"
           onClick={() => {
@@ -343,7 +343,7 @@ export default function CalendarPickerModal({
             setViewYear(dropDate.getFullYear());
             setViewMonth(dropDate.getMonth());
           }}
-          className={`text-sm font-bold tracking-tight px-3 py-1.5 rounded-full transition-all ${
+          className={`text-[11px] sm:text-sm font-bold tracking-tight px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full transition-all ${
             activeMode === "return"
               ? "bg-[#2D2866] text-white shadow-xs"
               : "text-[#706C8F] hover:text-[#2D2866] hover:bg-white/60"
@@ -354,16 +354,16 @@ export default function CalendarPickerModal({
       </div>
 
       {/* Main 2-Column Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto_1.1fr] items-start gap-y-6 sm:gap-y-0">
+      <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto_1.1fr] items-start gap-y-3 sm:gap-y-0">
         {/* LEFT COLUMN: Date Calendar */}
         <div className="pr-0 sm:pr-6">
           {/* Column Header: "Return date" or "Pick-up date" */}
-          <h3 className="text-lg font-bold text-[#2D2866] tracking-tight">
+          <h3 className="text-sm sm:text-lg font-bold text-[#2D2866] tracking-tight">
             {activeMode === "pickup" ? "Pick-up date" : "Return date"}
           </h3>
 
           {/* Month & Year Navigator */}
-          <div className="relative mt-3 mb-2 flex items-center justify-between">
+          <div className="relative mt-1.5 mb-1 sm:mt-3 sm:mb-2 flex items-center justify-between">
             <button
               type="button"
               onClick={() => setMonthDropdownOpen(!monthDropdownOpen)}
@@ -425,7 +425,7 @@ export default function CalendarPickerModal({
           </div>
 
           {/* Weekday Row (Single Letter: S M T W T F S) */}
-          <div className="grid grid-cols-7 text-center text-xs font-semibold text-[#8E8AAB] py-1 mb-1">
+          <div className="grid grid-cols-7 text-center text-[11px] sm:text-xs font-semibold text-[#8E8AAB] py-0.5 sm:py-1 mb-0.5 sm:mb-1">
             <span>S</span>
             <span>M</span>
             <span>T</span>
@@ -436,10 +436,10 @@ export default function CalendarPickerModal({
           </div>
 
           {/* Days Grid */}
-          <div className="grid grid-cols-7 gap-y-1 text-center text-sm font-medium">
+          <div className="grid grid-cols-7 gap-y-0.5 sm:gap-y-1 text-center text-xs sm:text-sm font-medium">
             {calendarCells.map((cell) => {
               if (cell.isBlank) {
-                return <div key={cell.key} className="h-8 w-8" />;
+                return <div key={cell.key} className="h-7 w-7 sm:h-8 sm:w-8" />;
               }
 
               let btnStyle = "text-[#4A4568] hover:bg-white/80 transition-colors";
@@ -456,12 +456,12 @@ export default function CalendarPickerModal({
               }
 
               return (
-                <div key={cell.key} className="flex items-center justify-center p-0.5">
+                <div key={cell.key} className="flex items-center justify-center p-0 sm:p-0.5">
                   <button
                     type="button"
                     disabled={cell.isPast}
                     onClick={() => handleSelectDay(cell.date)}
-                    className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-semibold transition-all ${btnStyle}`}
+                    className={`flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-full text-[11px] sm:text-xs font-semibold transition-all ${btnStyle}`}
                   >
                     <span>{cell.dayNumber}</span>
                   </button>
@@ -475,17 +475,17 @@ export default function CalendarPickerModal({
         <div className="hidden sm:block w-[1px] h-full bg-[#E2E0EE]" />
 
         {/* RIGHT COLUMN: Time Stepper */}
-        <div className="pl-0 sm:pl-6 flex flex-col justify-between h-full pt-4 sm:pt-0 border-t sm:border-t-0 border-[#E2E0EE]">
+        <div className="pl-0 sm:pl-6 flex flex-col justify-between h-full pt-2.5 sm:pt-0 border-t sm:border-t-0 border-[#E2E0EE]">
           {/* Column Header: "Return time" or "Pick-up time" */}
-          <h3 className="text-lg font-bold text-[#2D2866] tracking-tight">
+          <h3 className="text-sm sm:text-lg font-bold text-[#2D2866] tracking-tight">
             {activeMode === "pickup" ? "Pick-up time" : "Return time"}
           </h3>
 
           {/* Stepper Row matching screenshot exactly */}
-          <div className="my-auto py-8 sm:py-10 flex items-center justify-center">
-            <div className="flex items-center justify-center gap-2.5 sm:gap-3.5 select-none">
+          <div className="my-auto py-2 sm:py-10 flex items-center justify-center">
+            <div className="flex items-center justify-center gap-1.5 sm:gap-3.5 select-none">
               {/* Left horizontal line */}
-              <span className="w-5 sm:w-6 h-[2px] bg-[#3B336A] rounded-full shrink-0" />
+              <span className="w-3 sm:w-6 h-[2px] bg-[#3B336A] rounded-full shrink-0" />
 
               {/* Hour column */}
               <div className="flex flex-col items-center">
@@ -493,33 +493,33 @@ export default function CalendarPickerModal({
                   type="button"
                   aria-label="Hour Up"
                   onClick={() => stepHour(1)}
-                  className="text-[#3B336A] hover:scale-125 transition-transform p-1 cursor-pointer"
+                  className="text-[#3B336A] hover:scale-125 transition-transform p-0.5 sm:p-1 cursor-pointer"
                 >
-                  <ChevronUp size={22} strokeWidth={2.6} />
+                  <ChevronUp size={18} strokeWidth={2.6} className="sm:w-[22px] sm:h-[22px]" />
                 </button>
-                <span className="text-[28px] sm:text-[32px] font-extrabold text-[#3B336A] tracking-tight leading-none my-2.5 w-10 text-center font-sans">
+                <span className="text-[22px] sm:text-[32px] font-extrabold text-[#3B336A] tracking-tight leading-none my-1 sm:my-2.5 w-8 sm:w-10 text-center font-sans">
                   {pad(displayHours)}
                 </span>
                 <button
                   type="button"
                   aria-label="Hour Down"
                   onClick={() => stepHour(-1)}
-                  className="text-[#3B336A] hover:scale-125 transition-transform p-1 cursor-pointer"
+                  className="text-[#3B336A] hover:scale-125 transition-transform p-0.5 sm:p-1 cursor-pointer"
                 >
-                  <ChevronDown size={22} strokeWidth={2.6} />
+                  <ChevronDown size={18} strokeWidth={2.6} className="sm:w-[22px] sm:h-[22px]" />
                 </button>
               </div>
 
               {/* Colon */}
               <div className="flex flex-col items-center justify-center px-0.5">
-                <span className="invisible p-1" aria-hidden="true">
-                  <ChevronUp size={22} />
+                <span className="invisible p-0.5 sm:p-1" aria-hidden="true">
+                  <ChevronUp size={18} />
                 </span>
-                <span className="text-[26px] sm:text-[30px] font-extrabold text-[#3B336A] leading-none my-2.5">
+                <span className="text-[20px] sm:text-[30px] font-extrabold text-[#3B336A] leading-none my-1 sm:my-2.5">
                   :
                 </span>
-                <span className="invisible p-1" aria-hidden="true">
-                  <ChevronDown size={22} />
+                <span className="invisible p-0.5 sm:p-1" aria-hidden="true">
+                  <ChevronDown size={18} />
                 </span>
               </div>
 
@@ -529,20 +529,20 @@ export default function CalendarPickerModal({
                   type="button"
                   aria-label="Minute Up"
                   onClick={() => stepMinute(1)}
-                  className="text-[#3B336A] hover:scale-125 transition-transform p-1 cursor-pointer"
+                  className="text-[#3B336A] hover:scale-125 transition-transform p-0.5 sm:p-1 cursor-pointer"
                 >
-                  <ChevronUp size={22} strokeWidth={2.6} />
+                  <ChevronUp size={18} strokeWidth={2.6} className="sm:w-[22px] sm:h-[22px]" />
                 </button>
-                <span className="text-[28px] sm:text-[32px] font-extrabold text-[#3B336A] tracking-tight leading-none my-2.5 w-10 text-center font-sans">
+                <span className="text-[22px] sm:text-[32px] font-extrabold text-[#3B336A] tracking-tight leading-none my-1 sm:my-2.5 w-8 sm:w-10 text-center font-sans">
                   {pad(rawMinutes)}
                 </span>
                 <button
                   type="button"
                   aria-label="Minute Down"
                   onClick={() => stepMinute(-1)}
-                  className="text-[#3B336A] hover:scale-125 transition-transform p-1 cursor-pointer"
+                  className="text-[#3B336A] hover:scale-125 transition-transform p-0.5 sm:p-1 cursor-pointer"
                 >
-                  <ChevronDown size={22} strokeWidth={2.6} />
+                  <ChevronDown size={18} strokeWidth={2.6} className="sm:w-[22px] sm:h-[22px]" />
                 </button>
               </div>
 
@@ -552,47 +552,47 @@ export default function CalendarPickerModal({
                   type="button"
                   aria-label="Toggle AM/PM"
                   onClick={toggleAmPm}
-                  className="text-[#3B336A] hover:scale-125 transition-transform p-1 cursor-pointer"
+                  className="text-[#3B336A] hover:scale-125 transition-transform p-0.5 sm:p-1 cursor-pointer"
                 >
-                  <ChevronUp size={22} strokeWidth={2.6} />
+                  <ChevronUp size={18} strokeWidth={2.6} className="sm:w-[22px] sm:h-[22px]" />
                 </button>
-                <span className="text-[22px] sm:text-[26px] font-extrabold text-[#3B336A] tracking-tight leading-none my-2.5 w-11 text-center font-sans">
+                <span className="text-[17px] sm:text-[26px] font-extrabold text-[#3B336A] tracking-tight leading-none my-1 sm:my-2.5 w-8 sm:w-11 text-center font-sans">
                   {ampm}
                 </span>
                 <button
                   type="button"
                   aria-label="Toggle AM/PM"
                   onClick={toggleAmPm}
-                  className="text-[#3B336A] hover:scale-125 transition-transform p-1 cursor-pointer"
+                  className="text-[#3B336A] hover:scale-125 transition-transform p-0.5 sm:p-1 cursor-pointer"
                 >
-                  <ChevronDown size={22} strokeWidth={2.6} />
+                  <ChevronDown size={18} strokeWidth={2.6} className="sm:w-[22px] sm:h-[22px]" />
                 </button>
               </div>
 
               {/* Right horizontal line */}
-              <span className="w-5 sm:w-6 h-[2px] bg-[#3B336A] rounded-full shrink-0" />
+              <span className="w-3 sm:w-6 h-[2px] bg-[#3B336A] rounded-full shrink-0" />
 
               {/* Save Button */}
-              <div className="flex flex-col items-center justify-center ml-2 sm:ml-3">
-                <span className="invisible p-1" aria-hidden="true">
-                  <ChevronUp size={22} />
+              <div className="flex flex-col items-center justify-center ml-1.5 sm:ml-3">
+                <span className="invisible p-0.5 sm:p-1" aria-hidden="true">
+                  <ChevronUp size={18} />
                 </span>
                 <button
                   type="button"
                   onClick={handleSave}
-                  className="my-2.5 rounded-full bg-[#2B2360] hover:bg-[#1E174D] px-5 sm:px-6 py-2 text-sm font-bold text-white shadow-sm transition-all hover:scale-105 active:scale-95 cursor-pointer"
+                  className="my-1 sm:my-2.5 rounded-full bg-[#2B2360] hover:bg-[#1E174D] px-4 sm:px-6 py-1.5 sm:py-2 text-xs sm:text-sm font-bold text-white shadow-sm transition-all hover:scale-105 active:scale-95 cursor-pointer"
                 >
                   Save
                 </button>
-                <span className="invisible p-1" aria-hidden="true">
-                  <ChevronDown size={22} />
+                <span className="invisible p-0.5 sm:p-1" aria-hidden="true">
+                  <ChevronDown size={18} />
                 </span>
               </div>
             </div>
           </div>
 
           {/* Quick confirmation hint */}
-          <div className="text-right text-[11px] font-semibold text-[#8E8AAB] mt-auto">
+          <div className="text-right text-[10px] sm:text-[11px] font-semibold text-[#8E8AAB] mt-1 sm:mt-auto">
             {formatDisplay(activeDate)}
           </div>
         </div>
