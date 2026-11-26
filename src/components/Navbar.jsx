@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronDown, Menu, MessageCircle, Phone, User, X } from "lucide-react";
+import { ChevronDown, Menu, MessageCircle, Phone, X } from "lucide-react";
 import { navigate } from "../utils/navigation";
 import logoImg from "../assets/logo";
 
@@ -33,6 +33,16 @@ export default function Navbar({ onOpenAuth }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [rentalDropdown, setRentalDropdown] = useState(false);
   const [subscriptionDropdown, setSubscriptionDropdown] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => {
+      setScrolled(window.scrollY > 12);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   useEffect(() => {
     if (typeof document === "undefined") return;
@@ -75,7 +85,13 @@ export default function Navbar({ onOpenAuth }) {
 
   return (
     <>
-      <header className="sticky top-0 z-50 w-full border-b border-slate-100 bg-white/95 backdrop-blur-md transition-all shadow-[0_4px_25px_rgba(45,40,102,0.04)]">
+      <header
+        className={`sticky top-0 z-50 w-full border-b backdrop-blur-md transition-all duration-300 ${
+          scrolled
+            ? "border-slate-200/80 bg-white/98 shadow-[0_10px_35px_rgba(45,40,102,0.08)]"
+            : "border-slate-100 bg-white/95 shadow-[0_4px_25px_rgba(45,40,102,0.04)]"
+        }`}
+      >
         <div className="mx-auto flex h-16 sm:h-20 max-w-7xl items-center justify-between px-4 sm:px-6">
         {/* Left: Brand Logo */}
         <a
@@ -105,28 +121,28 @@ export default function Navbar({ onOpenAuth }) {
           <a
             href="#offers"
             onClick={(e) => handleNavClick(e, "#offers")}
-            className="text-sm font-medium text-slate-700 transition-colors hover:text-[#2D2866]"
+            className="relative py-1 text-sm font-medium text-slate-700 transition-colors hover:text-[#2D2866] after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:rounded-full after:bg-[#2D2866] after:transition-all after:duration-300 hover:after:w-full"
           >
             Deals
           </a>
           <a
             href="/fleet"
             onClick={(e) => handleNavClick(e, "/fleet")}
-            className="text-sm font-medium text-slate-700 transition-colors hover:text-[#2D2866]"
+            className="relative py-1 text-sm font-medium text-slate-700 transition-colors hover:text-[#2D2866] after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:rounded-full after:bg-[#2D2866] after:transition-all after:duration-300 hover:after:w-full"
           >
             Fleets
           </a>
           <a
             href="#how"
             onClick={(e) => handleNavClick(e, "#how")}
-            className="text-sm font-medium text-slate-700 transition-colors hover:text-[#2D2866]"
+            className="relative py-1 text-sm font-medium text-slate-700 transition-colors hover:text-[#2D2866] after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:rounded-full after:bg-[#2D2866] after:transition-all after:duration-300 hover:after:w-full"
           >
             About Us
           </a>
           <a
             href="#footer"
             onClick={(e) => handleNavClick(e, "#footer")}
-            className="text-sm font-medium text-slate-700 transition-colors hover:text-[#2D2866]"
+            className="relative py-1 text-sm font-medium text-slate-700 transition-colors hover:text-[#2D2866] after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:rounded-full after:bg-[#2D2866] after:transition-all after:duration-300 hover:after:w-full"
           >
             Contact Us
           </a>
@@ -306,18 +322,21 @@ export default function Navbar({ onOpenAuth }) {
                     { label: "About Us", href: "#how" },
                     { label: "Contact Us", href: "#footer" },
                     { label: "FAQ's", href: "#faqs" },
-                  ].map((link) => (
-                    <a
+                  ].map((link, idx) => (
+                    <motion.a
                       key={link.label}
                       href={link.href}
+                      initial={{ opacity: 0, x: 16 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.05 + idx * 0.045, duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
                       onClick={(e) => {
                         setMobileOpen(false);
                         handleNavClick(e, link.href);
                       }}
-                      className="block py-2.5 text-base font-semibold text-slate-800 transition-colors hover:text-[#2D2866]"
+                      className="block rounded-xl px-2 py-2.5 text-base font-semibold text-slate-800 transition-colors hover:bg-slate-50 hover:text-[#2D2866]"
                     >
                       {link.label}
-                    </a>
+                    </motion.a>
                   ))}
                 </div>
 
@@ -352,25 +371,14 @@ export default function Navbar({ onOpenAuth }) {
               </div>
 
               {/* Bottom Actions */}
-              <div className="pt-6 mt-6 border-t border-slate-100 grid grid-cols-2 gap-3">
+              <div className="pt-6 mt-6 border-t border-slate-100">
                 <a
                   href={`tel:${PHONE}`}
-                  className="flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white py-3 px-3 text-sm font-bold text-slate-800 shadow-sm transition-colors hover:bg-slate-50"
+                  className="flex w-full items-center justify-center gap-2 rounded-full border border-slate-200 bg-white py-3 px-4 text-sm font-bold text-slate-800 shadow-sm transition-colors hover:bg-slate-50"
                 >
                   <Phone size={15} className="text-slate-700" />
                   <span>Call Support</span>
                 </a>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setMobileOpen(false);
-                    onOpenAuth();
-                  }}
-                  className="flex items-center justify-center gap-2 rounded-full bg-[#2D2866] hover:bg-[#1F1B4D] py-3 px-3 text-sm font-bold text-white shadow-md shadow-[#2D2866]/20 transition-all"
-                >
-                  <User size={15} />
-                  <span>Login / Signup</span>
-                </button>
               </div>
             </motion.div>
           </>

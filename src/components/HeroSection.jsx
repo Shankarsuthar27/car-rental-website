@@ -663,10 +663,15 @@ export default function HeroSection({ onSearchSubmit }) {
         {/* LOWER HERO: Editorial Slider (Left) & Right-Side Traveler Car Visual */}
         <div className="mt-12 grid grid-cols-1 items-center gap-8 lg:grid-cols-12 lg:gap-6 lg:mt-16">
           {/* Lower-Left Content: Editorial Slider */}
-          <div className="lg:col-span-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.65, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+            className="lg:col-span-6"
+          >
             <div>
               <div className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-[#2D2866]">
-               
+                <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
                 <span>Jalore Self Drive Advantage</span>
               </div>
               <h1 className="text-3xl font-extrabold tracking-tight text-[#2D2866] sm:text-4xl lg:text-[42px] leading-tight">
@@ -716,14 +721,22 @@ export default function HeroSection({ onSearchSubmit }) {
 
             {/* Micro badges below slider */}
             <div className="mt-8 flex flex-wrap items-center gap-4 text-xs font-semibold text-slate-600">
-              <span className="flex items-center gap-1.5 rounded-full bg-[#F8F7FC] px-3.5 py-1.5 border border-slate-200/60">
+              <motion.span
+                whileHover={{ y: -2, scale: 1.02 }}
+                transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                className="flex items-center gap-1.5 rounded-full bg-[#F8F7FC] px-3.5 py-1.5 border border-slate-200/60 shadow-xs cursor-default"
+              >
                 <Compass size={14} className="text-[#2D2866]" /> Unlimited Freedom
-              </span>
-              <span className="flex items-center gap-1.5 rounded-full bg-[#F8F7FC] px-3.5 py-1.5 border border-slate-200/60">
+              </motion.span>
+              <motion.span
+                whileHover={{ y: -2, scale: 1.02 }}
+                transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                className="flex items-center gap-1.5 rounded-full bg-[#F8F7FC] px-3.5 py-1.5 border border-slate-200/60 shadow-xs cursor-default"
+              >
                 <ShieldCheck size={14} className="text-emerald-600" /> 100% Sanitized Handover
-              </span>
+              </motion.span>
             </div>
-          </div>
+          </motion.div>
 
           {/* Right-Side Visual: Modern Flat Vector Illustration */}
           <motion.div
@@ -732,7 +745,9 @@ export default function HeroSection({ onSearchSubmit }) {
             transition={{ duration: 0.75, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
             className="flex justify-center lg:col-span-6 lg:justify-end"
           >
-            <HeroTravelerCarIllustration />
+            <div className="animate-float-slow w-full max-w-[560px]">
+              <HeroTravelerCarIllustration />
+            </div>
           </motion.div>
         </div>
       </div>

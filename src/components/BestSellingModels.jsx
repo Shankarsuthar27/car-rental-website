@@ -325,7 +325,6 @@ export default function BestSellingModels() {
           max-height: 175px;
           object-fit: contain;
           object-position: center;
-          mix-blend-mode: multiply;
           transition: transform 0.35s ease;
           display: block;
           margin: 0 auto;

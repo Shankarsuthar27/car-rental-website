@@ -46,8 +46,8 @@ const waLink = (text) => `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(te
 const reveal = {
   initial: { opacity: 0, y: 24 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, amount: 0.18 },
-  transition: { duration: 0.55 },
+  viewport: { once: true, amount: 0.15 },
+  transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] },
 };
 
 function SectionTitle({ eyebrow, title, copy, light = false }) {
@@ -236,7 +236,7 @@ function VehicleCard({ car, onBook }) {
       whileHover={{ y: -6 }}
       className="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-[0_8px_30px_rgba(45,40,102,0.06)] transition-all hover:shadow-[0_16px_40px_rgba(45,40,102,0.12)]"
     >
-      <div className={`relative h-48 overflow-hidden bg-gradient-to-br ${car.tone}`}>
+      <div className="relative h-48 overflow-hidden bg-white border-b border-slate-100">
         <span
           className={`absolute left-3 top-3 z-10 rounded-full px-3 py-1 text-[10px] font-black tracking-wider text-white shadow-sm uppercase ${
             car.status === "available" ? "bg-emerald-600" : "bg-amber-600"
@@ -244,13 +244,13 @@ function VehicleCard({ car, onBook }) {
         >
           {car.status || "AVAILABLE"}
         </span>
-        <span className="absolute right-3 top-3 z-10 rounded-full bg-white/95 px-3 py-1 text-[11px] font-extrabold text-[#2D2866] shadow-sm backdrop-blur">
+        <span className="absolute right-3 top-3 z-10 rounded-full bg-white/95 border border-slate-100 px-3 py-1 text-[11px] font-extrabold text-[#2D2866] shadow-sm backdrop-blur">
           {car.year} MODEL
         </span>
         <img
           src={car.image || jsdHeroSuv}
           alt={`${car.name} self drive car for rent in Jalore`}
-          className="h-full w-full scale-105 object-contain p-2 mix-blend-multiply transition duration-500 hover:scale-115"
+          className="h-full w-full scale-105 object-contain p-2 transition duration-500 hover:scale-115"
           onError={(e) => {
             const fallback = car.fallbackImage || jsdHeroSuv;
             if (e.currentTarget.src !== fallback) {
@@ -592,8 +592,9 @@ function OffersReviews() {
             {offers.map(([title, deal, copy], i) => (
               <motion.div
                 {...reveal}
+                whileHover={{ y: -5 }}
                 key={title}
-                className="min-w-[290px] flex-1 snap-start overflow-hidden rounded-2xl border border-white/10 bg-white/[0.06] p-7 text-white sm:min-w-[350px] hover:border-[#E8E7F2]/40 transition-colors"
+                className="min-w-[290px] flex-1 snap-start overflow-hidden rounded-2xl border border-white/10 bg-white/[0.06] p-7 text-white sm:min-w-[350px] hover:border-[#E8E7F2]/40 hover:bg-white/[0.09] transition-all duration-300"
               >
                 <div className="mb-8 flex items-start justify-between">
                   <span className="rounded-full bg-[#E8E7F2] px-3.5 py-1 text-xs font-bold text-[#2D2866]">
@@ -622,8 +623,9 @@ function OffersReviews() {
             {reviews.map(([name, place, review]) => (
               <motion.article
                 {...reveal}
+                whileHover={{ y: -4 }}
                 key={name}
-                className="rounded-2xl border border-slate-100 bg-[#F8F7FC] p-6 shadow-sm"
+                className="rounded-2xl border border-slate-100 bg-[#F8F7FC] p-6 shadow-sm transition-all duration-300 hover:shadow-md hover:border-[#2D2866]/20"
               >
                 <div className="mb-4 flex gap-1 text-amber-400">
                   {[1, 2, 3, 4, 5].map((n) => (
@@ -684,7 +686,7 @@ function FAQs() {
           {items.map(([question, answer], i) => (
             <div
               key={question}
-              className="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm"
+              className="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition-all duration-200 hover:border-[#2D2866]/25 hover:shadow-md"
             >
               <button
                 type="button"
@@ -1055,64 +1057,83 @@ export default function App() {
     <>
       <Navbar onOpenAuth={() => setAuthOpen(true)} />
       <main>
-        {isFleetPage ? (
-          <>
-            {/* Dedicated Fleet Page Header / Breadcrumb */}
-            <div className="border-b border-slate-100 bg-[#2D2866] py-10 px-6 text-white shadow-inner">
-              <div className="mx-auto flex max-w-7xl flex-col justify-between gap-4 sm:flex-row sm:items-center">
-                <div>
-                  <div className="mb-2 flex items-center gap-2 text-xs font-semibold text-slate-300">
-                    <button
-                      type="button"
-                      onClick={() => navigate("/")}
-                      className="hover:text-white transition-colors cursor-pointer"
-                    >
-                      Home
-                    </button>
-                    <span>/</span>
-                    <span className="text-[#E8E7F2] font-bold">Our Fleet</span>
+        <AnimatePresence mode="wait">
+          {isFleetPage ? (
+            <motion.div
+              key="fleet-page"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+            >
+              {/* Dedicated Fleet Page Header / Breadcrumb */}
+              <div className="border-b border-slate-100 bg-[#2D2866] py-10 px-6 text-white shadow-inner">
+                <div className="mx-auto flex max-w-7xl flex-col justify-between gap-4 sm:flex-row sm:items-center">
+                  <div>
+                    <div className="mb-2 flex items-center gap-2 text-xs font-semibold text-slate-300">
+                      <button
+                        type="button"
+                        onClick={() => navigate("/")}
+                        className="hover:text-white transition-colors cursor-pointer"
+                      >
+                        Home
+                      </button>
+                      <span>/</span>
+                      <span className="text-[#E8E7F2] font-bold">Our Fleet</span>
+                    </div>
+                    <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl text-white">
+                      Self-Drive Car Fleet in Jalore
+                    </h1>
+                    <p className="mt-2 text-sm text-slate-300">
+                      Browse our full range of 11 sanitized, road-ready hatchbacks and SUVs.
+                    </p>
                   </div>
-                  <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl text-white">
-                    Self-Drive Car Fleet in Jalore
-                  </h1>
-                  <p className="mt-2 text-sm text-slate-300">
-                    Browse our full range of 11 sanitized, road-ready hatchbacks and SUVs.
-                  </p>
+                  <button
+                    type="button"
+                    onClick={() => navigate("/")}
+                    className="self-start rounded-full border border-white/20 bg-white/10 px-5 py-2.5 text-xs font-bold text-white transition-all hover:bg-white/20 hover:scale-105 active:scale-95 cursor-pointer shadow-sm"
+                  >
+                    ← Back to Home
+                  </button>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => navigate("/")}
-                  className="self-start rounded-full border border-white/20 bg-white/10 px-5 py-2.5 text-xs font-bold text-white transition-all hover:bg-white/20 hover:scale-105 cursor-pointer shadow-sm"
-                >
-                  ← Back to Home
-                </button>
               </div>
-            </div>
-            <FleetSection onBook={setSelectedCar} />
-          </>
-        ) : (
-          <>
-            <HeroSection />
-            <BestSellingModels />
-            <WhySection />
-            <HowItWorks />
-            <OffersReviews />
-            <FAQs />
-          </>
-        )}
+              <FleetSection onBook={setSelectedCar} />
+            </motion.div>
+          ) : (
+            <motion.div
+              key="home-page"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.25 }}
+            >
+              <HeroSection />
+              <BestSellingModels />
+              <WhySection />
+              <HowItWorks />
+              <OffersReviews />
+              <FAQs />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </main>
       <Footer isFleetPage={isFleetPage} />
 
       {/* Floating WhatsApp Action (desktop) */}
-      <a
+      <motion.a
         href={waLink("Hi JSD, I want to book a self-drive car.")}
         target="_blank"
         rel="noreferrer"
-        className="fixed bottom-6 right-6 z-40 hidden h-14 items-center gap-2 rounded-full bg-[#2D2866] hover:bg-[#1F1B4D] px-6 font-bold text-white shadow-xl shadow-[#2D2866]/25 transition hover:-translate-y-1 md:flex"
+        initial={{ opacity: 0, scale: 0.85, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ delay: 0.6, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+        whileHover={{ scale: 1.05, y: -2 }}
+        whileTap={{ scale: 0.96 }}
+        className="animate-pulse-ring fixed bottom-6 right-6 z-40 hidden h-14 items-center gap-2 rounded-full bg-[#2D2866] hover:bg-[#1F1B4D] px-6 font-bold text-white shadow-xl shadow-[#2D2866]/25 transition-colors md:flex"
       >
         <MessageCircle size={20} className="text-emerald-400" />
         <span>Book on WhatsApp</span>
-      </a>
+      </motion.a>
 
       {/* Sticky Bottom Actions on Mobile */}
       <div className="fixed inset-x-0 bottom-0 z-50 grid grid-cols-2 border-t border-slate-100 bg-white p-2 shadow-2xl md:hidden">
