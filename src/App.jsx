@@ -1034,64 +1034,64 @@ function BookingModal({ car, onClose }) {
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: 20, scale: 0.96 }}
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md rounded-[28px] bg-white p-6 sm:p-7 shadow-2xl my-4"
+        className="w-full max-w-[340px] sm:max-w-md max-h-[90dvh] overflow-y-auto rounded-[22px] sm:rounded-[28px] bg-white p-4 sm:p-7 shadow-2xl my-2 sm:my-4"
       >
         <button
           type="button"
           onClick={onClose}
           aria-label="Close booking form"
-          className="float-right grid h-9 w-9 place-items-center rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors"
+          className="float-right grid h-8 w-8 sm:h-9 sm:w-9 place-items-center rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors"
         >
-          <X size={18} />
+          <X size={16} />
         </button>
-        <span className="inline-block rounded-full bg-[#E8E7F2] px-3 py-1 text-xs font-bold uppercase tracking-wider text-[#2D2866]">
+        <span className="inline-block rounded-full bg-[#E8E7F2] px-2.5 py-0.5 sm:px-3 sm:py-1 text-[10px] sm:text-xs font-bold uppercase tracking-wider text-[#2D2866]">
           Quick Booking
         </span>
-        <h2 className="mt-2 text-2xl font-black text-[#2D2866]">{car.name}</h2>
-        <p className="mt-1 text-xs font-semibold text-slate-500">
+        <h2 className="mt-1.5 sm:mt-2 text-lg sm:text-2xl font-black text-[#2D2866] leading-tight">{car.name}</h2>
+        <p className="mt-0.5 sm:mt-1 text-[11px] sm:text-xs font-semibold text-slate-500">
           {car.branch} • ₹{money(rate)}/{plan === "Daily" ? "day" : "hr"}
         </p>
 
         {submitted ? (
-          <div className="mt-6 rounded-2xl border border-emerald-200 bg-emerald-50 p-6 text-center">
-            <div className="mx-auto mb-3 grid h-12 w-12 place-items-center rounded-full bg-emerald-500 text-white shadow-md shadow-emerald-500/20">
-              <CircleCheck size={24} />
+          <div className="mt-4 sm:mt-6 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 sm:p-6 text-center">
+            <div className="mx-auto mb-2.5 grid h-10 w-10 sm:h-12 sm:w-12 place-items-center rounded-full bg-emerald-500 text-white shadow-md shadow-emerald-500/20">
+              <CircleCheck size={20} />
             </div>
-            <h3 className="text-lg font-extrabold text-emerald-950">Booking Request Sent!</h3>
-            <p className="mt-2 text-xs leading-relaxed text-emerald-800">
+            <h3 className="text-base sm:text-lg font-extrabold text-emerald-950">Booking Request Sent!</h3>
+            <p className="mt-1.5 text-[11px] sm:text-xs leading-relaxed text-emerald-800">
               Thank you, <strong>{customerName}</strong>. Your booking details for{" "}
               <strong>{car.name}</strong> have been saved. Our Jalore team will contact you shortly on{" "}
               <strong>{phone}</strong>.
             </p>
-            <div className="mt-5 flex flex-col gap-2.5">
+            <div className="mt-4 flex flex-col gap-2">
               <a
                 target="_blank"
                 rel="noreferrer"
                 href={waLink(message)}
-                className="flex w-full items-center justify-center gap-2 rounded-full bg-emerald-600 py-3 text-sm font-bold text-white hover:bg-emerald-700 shadow-sm transition-all"
+                className="flex w-full items-center justify-center gap-2 rounded-full bg-emerald-600 py-2.5 sm:py-3 text-xs sm:text-sm font-bold text-white hover:bg-emerald-700 shadow-sm transition-all"
               >
-                <MessageCircle size={17} /> Also Chat on WhatsApp
+                <MessageCircle size={16} /> Also Chat on WhatsApp
               </a>
               <button
                 type="button"
                 onClick={onClose}
-                className="w-full rounded-full border border-emerald-200 bg-white py-2.5 text-xs font-bold text-emerald-900 hover:bg-emerald-100/50 transition-colors"
+                className="w-full rounded-full border border-emerald-200 bg-white py-2 text-xs font-bold text-emerald-900 hover:bg-emerald-100/50 transition-colors"
               >
                 Done
               </button>
             </div>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="mt-5 space-y-3.5">
+          <form onSubmit={handleSubmit} className="mt-3.5 sm:mt-5 space-y-2.5 sm:space-y-3.5">
             <div>
-              <label className="field-label">Select plan</label>
+              <label className="field-label !mb-1">Select plan</label>
               <div className="grid grid-cols-2 rounded-xl bg-slate-100 p-1">
                 {["Daily", "Hourly"].map((x) => (
                   <button
                     type="button"
                     onClick={() => setPlan(x)}
                     key={x}
-                    className={`rounded-lg py-2 text-xs font-bold transition-all ${
+                    className={`rounded-lg py-1.5 sm:py-2 text-[11px] sm:text-xs font-bold transition-all ${
                       plan === x
                         ? "bg-[#2D2866] text-white shadow-sm"
                         : "text-slate-600 hover:text-slate-900"
@@ -1104,28 +1104,30 @@ function BookingModal({ car, onClose }) {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-2 sm:gap-3">
               <div>
-                <label className="field-label">Full Name *</label>
-                <div className="field-wrap">
-                  <Users size={15} className="text-[#2D2866] shrink-0" />
+                <label className="field-label !mb-1">Full Name *</label>
+                <div className="field-wrap max-sm:!min-h-[38px] max-sm:!px-2.5">
+                  <Users size={14} className="text-[#2D2866] shrink-0" />
                   <input
                     type="text"
                     required
                     placeholder="Your name"
+                    className="max-sm:!text-xs"
                     value={customerName}
                     onChange={(e) => setCustomerName(e.target.value)}
                   />
                 </div>
               </div>
               <div>
-                <label className="field-label">Mobile / WhatsApp *</label>
-                <div className="field-wrap">
-                  <Phone size={15} className="text-[#2D2866] shrink-0" />
+                <label className="field-label !mb-1">Mobile *</label>
+                <div className="field-wrap max-sm:!min-h-[38px] max-sm:!px-2.5">
+                  <Phone size={14} className="text-[#2D2866] shrink-0" />
                   <input
                     type="tel"
                     required
-                    placeholder="10-digit number"
+                    placeholder="10-digit no."
+                    className="max-sm:!text-xs"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                   />
@@ -1133,26 +1135,28 @@ function BookingModal({ car, onClose }) {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-2 sm:gap-3">
               <div>
-                <label className="field-label">Pickup Date *</label>
-                <div className="field-wrap">
-                  <CalendarDays size={15} className="text-[#2D2866] shrink-0" />
+                <label className="field-label !mb-1">Pickup Date *</label>
+                <div className="field-wrap max-sm:!min-h-[38px] max-sm:!px-2.5">
+                  <CalendarDays size={14} className="text-[#2D2866] shrink-0 hidden sm:block" />
                   <input
                     type="date"
                     required
+                    className="max-sm:!text-xs"
                     value={pickupDate}
                     onChange={(e) => setPickupDate(e.target.value)}
                   />
                 </div>
               </div>
               <div>
-                <label className="field-label">Return Date</label>
-                <div className="field-wrap">
-                  <CalendarDays size={15} className="text-slate-400 shrink-0" />
+                <label className="field-label !mb-1">Return Date</label>
+                <div className="field-wrap max-sm:!min-h-[38px] max-sm:!px-2.5">
+                  <CalendarDays size={14} className="text-slate-400 shrink-0 hidden sm:block" />
                   <input
                     type="date"
                     min={pickupDate || undefined}
+                    className="max-sm:!text-xs"
                     value={returnDate}
                     onChange={(e) => setReturnDate(e.target.value)}
                   />
@@ -1161,12 +1165,13 @@ function BookingModal({ car, onClose }) {
             </div>
 
             <div>
-              <label className="field-label">Pickup Location / Delivery Area</label>
-              <div className="field-wrap">
-                <MapPin size={15} className="text-[#2D2866] shrink-0" />
+              <label className="field-label !mb-1">Pickup Location / Area</label>
+              <div className="field-wrap max-sm:!min-h-[38px] max-sm:!px-2.5">
+                <MapPin size={14} className="text-[#2D2866] shrink-0" />
                 <input
                   type="text"
-                  placeholder="Jalore Main Branch / Doorstep address"
+                  placeholder="Jalore Main Branch / Doorstep"
+                  className="max-sm:!text-xs"
                   value={pickupLocation}
                   onChange={(e) => setPickupLocation(e.target.value)}
                 />
@@ -1174,11 +1179,12 @@ function BookingModal({ car, onClose }) {
             </div>
 
             <div>
-              <label className="field-label">Notes (Optional)</label>
-              <div className="field-wrap">
+              <label className="field-label !mb-1">Notes (Optional)</label>
+              <div className="field-wrap max-sm:!min-h-[38px] max-sm:!px-2.5">
                 <input
                   type="text"
                   placeholder="Any special request or pickup time"
+                  className="max-sm:!text-xs"
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                 />
@@ -1186,7 +1192,7 @@ function BookingModal({ car, onClose }) {
             </div>
 
             {errorMsg && (
-              <p className="rounded-xl bg-rose-50 px-3 py-2 text-xs font-semibold text-rose-700 border border-rose-200">
+              <p className="rounded-xl bg-rose-50 px-3 py-2 text-[11px] sm:text-xs font-semibold text-rose-700 border border-rose-200">
                 {errorMsg}
               </p>
             )}
@@ -1194,13 +1200,13 @@ function BookingModal({ car, onClose }) {
             <button
               type="submit"
               disabled={submitting}
-              className="btn-primary mt-2 w-full justify-center py-3.5 text-sm disabled:opacity-60"
+              className="btn-primary mt-1.5 w-full justify-center py-2.5 sm:py-3.5 text-xs sm:text-sm disabled:opacity-60"
             >
               <span>{submitting ? "Submitting Request..." : "Submit Booking Request"}</span>
-              <ArrowRight size={16} />
+              <ArrowRight size={15} />
             </button>
 
-            <p className="pt-1 text-center text-[11px] text-slate-400">
+            <p className="pt-0.5 text-center text-[10px] sm:text-[11px] text-slate-400">
               No payment required now. Instant confirmation by our team.
             </p>
           </form>
