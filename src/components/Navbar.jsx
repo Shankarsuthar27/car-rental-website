@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown, Menu, MessageCircle, Phone, User, X } from "lucide-react";
 import { navigate } from "../utils/navigation";
@@ -34,6 +34,18 @@ export default function Navbar({ onOpenAuth }) {
   const [rentalDropdown, setRentalDropdown] = useState(false);
   const [subscriptionDropdown, setSubscriptionDropdown] = useState(false);
 
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    if (mobileOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileOpen]);
+
   const handleNavClick = (e, href) => {
     if (href.startsWith("/")) {
       e.preventDefault();
@@ -62,8 +74,9 @@ export default function Navbar({ onOpenAuth }) {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-slate-100 bg-white/95 backdrop-blur-md transition-all shadow-[0_4px_25px_rgba(45,40,102,0.04)]">
-      <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
+    <>
+      <header className="sticky top-0 z-50 w-full border-b border-slate-100 bg-white/95 backdrop-blur-md transition-all shadow-[0_4px_25px_rgba(45,40,102,0.04)]">
+        <div className="mx-auto flex h-16 sm:h-20 max-w-7xl items-center justify-between px-4 sm:px-6">
         {/* Left: Brand Logo */}
         <a
           href="/"
@@ -220,8 +233,9 @@ export default function Navbar({ onOpenAuth }) {
           {mobileOpen ? <X size={20} /> : <Menu size={20} />}
         </button>
       </div>
+      </header>
 
-      {/* Mobile Right-Slide Drawer */}
+      {/* Mobile Right-Slide Drawer (rendered outside <header> so backdrop-blur-md doesn't trap fixed positioning) */}
       <AnimatePresence>
         {mobileOpen && (
           <>
@@ -232,7 +246,7 @@ export default function Navbar({ onOpenAuth }) {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.25 }}
               onClick={() => setMobileOpen(false)}
-              className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm lg:hidden"
+              className="fixed inset-0 z-[90] bg-slate-900/50 backdrop-blur-sm lg:hidden"
             />
 
             {/* Slide-in drawer panel from the right */}
@@ -241,7 +255,7 @@ export default function Navbar({ onOpenAuth }) {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 28, stiffness: 280 }}
-              className="fixed inset-y-0 right-0 z-50 flex w-full max-w-sm flex-col justify-between bg-white p-6 shadow-2xl lg:hidden overflow-y-auto"
+              className="fixed inset-y-0 right-0 z-[100] flex h-[100dvh] w-[86vw] max-w-sm flex-col justify-between bg-white p-5 sm:p-6 shadow-2xl lg:hidden overflow-y-auto"
             >
               <div>
                 {/* Header with Logo + Close Button */}
@@ -362,6 +376,6 @@ export default function Navbar({ onOpenAuth }) {
           </>
         )}
       </AnimatePresence>
-    </header>
+    </>
   );
 }
