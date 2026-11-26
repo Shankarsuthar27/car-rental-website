@@ -65,15 +65,27 @@ function formatVehicleName(brand = "", model = "", variant = "") {
 
 // Map segment correctly
 function mapSegment(vehicleType = "", model = "") {
-  const type = (vehicleType || "").toLowerCase();
+  const type = (vehicleType || "").trim().toLowerCase();
   const m = (model || "").toLowerCase();
   if (type === "hatchback") return "Hatchback";
-  if (type === "sedan") return "Hatchback"; // Swift variants in local fleet map to Hatchback
+  if (type === "sedan") return m.includes("swift") ? "Hatchback" : "Sedan";
+  if (type === "mpv" || type === "muv") return "MPV";
   if (type === "suv") {
-    if (m.includes("sonet") || m.includes("fronx") || m.includes("xuv 300") || m.includes("xuv300")) {
+    if (
+      m.includes("sonet") ||
+      m.includes("fronx") ||
+      m.includes("xuv 300") ||
+      m.includes("xuv300") ||
+      m.includes("nexon") ||
+      m.includes("brezza") ||
+      m.includes("venue")
+    ) {
       return "Compact SUV";
     }
     return "SUV";
+  }
+  if (type) {
+    return type.charAt(0).toUpperCase() + type.slice(1);
   }
   return "SUV";
 }
@@ -86,11 +98,14 @@ export function transformVehicle(v, index = 0) {
   const rawTrans = (v.transmission || "manual").toLowerCase();
   const transmission = rawTrans.charAt(0).toUpperCase() + rawTrans.slice(1);
 
-  // Extract image directly from Supabase vehicle_images relation
+  // Extract image directly from Supabase vehicle_images relation or direct column
   let supabaseImage = null;
   if (Array.isArray(v.vehicle_images) && v.vehicle_images.length > 0) {
     const primary = v.vehicle_images.find((img) => img.is_primary) || v.vehicle_images[0];
     supabaseImage = primary?.url || primary?.image_url || primary?.thumbnail_url || null;
+  }
+  if (!supabaseImage) {
+    supabaseImage = v.image_url || v.image || v.thumbnail_url || null;
   }
 
   const fallbackImage = mapVehicleImage(v.brand, v.model, v.variant);
@@ -98,11 +113,11 @@ export function transformVehicle(v, index = 0) {
 
   return {
     id: v.id || index + 1,
-    name: formatVehicleName(v.brand, v.model, v.variant),
-    brand: v.brand,
-    model: v.model,
-    variant: v.variant,
-    year: v.year || 2025,
+    name: formatVehicleName(v.brand || "", v.model || "", v.variant || ""),
+    brand: v.brand || "",
+    model: v.model || "",
+    variant: v.variant || "",
+    year: v.year || new Date().getFullYear(),
     segment: mapSegment(v.vehicle_type, v.model),
     seats: v.seating_capacity || 5,
     transmission,
@@ -126,20 +141,22 @@ export function transformVehicle(v, index = 0) {
 
 /**
  * Fetch all active vehicles along with their images from Supabase.
- * Returns formatted array of vehicles sorted by daily_rate asc.
+ * Uses no-store caching so newly added cars appear immediately.
  */
 export async function getVehiclesFromSupabase() {
   if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
     return null;
   }
   try {
-    const url = `${SUPABASE_URL}/rest/v1/vehicles?select=*,vehicle_images(*)&is_active=eq.true&order=daily_rate.asc`;
+    const url = `${SUPABASE_URL}/rest/v1/vehicles?select=*,vehicle_images(*)&or=(is_active.eq.true,is_active.is.null)&order=daily_rate.asc`;
     const response = await fetch(url, {
       method: "GET",
+      cache: "no-store",
       headers: {
         apikey: SUPABASE_ANON_KEY,
         Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
         "Content-Type": "application/json",
+        "Cache-Control": "no-cache",
       },
     });
 
@@ -157,4 +174,75 @@ export async function getVehiclesFromSupabase() {
     console.warn("Could not fetch vehicles from Supabase, using fallback fleet:", error);
     return null;
   }
+}
+
+// Shared live store so all components stay in sync when cars are added/updated in Supabase
+let liveState = {
+  fleet: null,
+  isLiveFromDb: false,
+};
+const listeners = new Set();
+let pollTimer = null;
+let fetchInFlight = null;
+
+async function syncVehiclesNow() {
+  if (fetchInFlight) return fetchInFlight;
+  fetchInFlight = getVehiclesFromSupabase()
+    .then((data) => {
+      if (Array.isArray(data) && data.length > 0) {
+        liveState = { fleet: data, isLiveFromDb: true };
+        listeners.forEach((fn) => fn(liveState));
+      }
+      return data;
+    })
+    .finally(() => {
+      fetchInFlight = null;
+    });
+  return fetchInFlight;
+}
+
+function handleVisibilityOrFocus() {
+  if (typeof document !== "undefined" && document.visibilityState === "visible") {
+    syncVehiclesNow();
+  }
+}
+
+export function subscribeToVehicles(fallbackFleet, listener) {
+  listeners.add(listener);
+
+  // Immediately deliver cached live fleet or fallback
+  listener({
+    fleet: liveState.fleet || fallbackFleet,
+    isLiveFromDb: liveState.isLiveFromDb,
+  });
+
+  // Start background sync on first subscriber
+  if (listeners.size === 1) {
+    syncVehiclesNow();
+    if (typeof window !== "undefined") {
+      window.addEventListener("focus", syncVehiclesNow);
+      document.addEventListener("visibilitychange", handleVisibilityOrFocus);
+      pollTimer = window.setInterval(() => {
+        if (document.visibilityState === "visible") {
+          syncVehiclesNow();
+        }
+      }, 15000);
+    }
+  }
+
+  return () => {
+    listeners.delete(listener);
+    if (listeners.size === 0 && typeof window !== "undefined") {
+      window.removeEventListener("focus", syncVehiclesNow);
+      document.removeEventListener("visibilitychange", handleVisibilityOrFocus);
+      if (pollTimer) {
+        window.clearInterval(pollTimer);
+        pollTimer = null;
+      }
+    }
+  };
+}
+
+export function refreshVehicles() {
+  return syncVehiclesNow();
 }

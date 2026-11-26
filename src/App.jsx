@@ -26,7 +26,7 @@ import {
   X,
   Zap,
 } from "lucide-react";
-import { fleetData, getVehiclesFromSupabase } from "./data/fleetData";
+import { fleetData, useLiveFleet } from "./data/fleetData";
 import Navbar from "./components/Navbar";
 import HeroSection from "./components/HeroSection";
 import BestSellingModels from "./components/BestSellingModels";
@@ -41,6 +41,10 @@ import {
 
 const PHONE = "+919783555555";
 const WHATSAPP = "919783555555";
+const GOOGLE_MAPS_URL =
+  "https://www.google.com/maps/place/JALORE+SELF+DRIVE+PRIVATE+LIMITED(JSD)/@25.3410837,72.6205741,16z/data=!4m6!3m5!1s0x394301683d9d3119:0x643e4f0063ebbf63!8m2!3d25.3390644!4d72.6284961!16s%2Fg%2F11zfs3fnw0";
+const GOOGLE_MAPS_EMBED_URL =
+  "https://www.google.com/maps?q=25.3390644,72.6284961+(JALORE+SELF+DRIVE+PRIVATE+LIMITED+(JSD))&hl=en&z=16&output=embed";
 const money = (value) => new Intl.NumberFormat("en-IN").format(value);
 const waLink = (text) => `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(text)}`;
 const reveal = {
@@ -161,9 +165,21 @@ function WhySection() {
   );
 }
 
-function Filters({ filters, setFilters, clear }) {
+function Filters({ filters, setFilters, clear, fleet = fleetData }) {
   const toggle = (key, value) =>
     setFilters((f) => ({ ...f, [key]: f[key] === value ? "" : value }));
+  const segments = useMemo(
+    () => Array.from(new Set(["SUV", "Compact SUV", "Hatchback", ...fleet.map((c) => c.segment).filter(Boolean)])),
+    [fleet],
+  );
+  const fuels = useMemo(
+    () => Array.from(new Set(["Petrol", "Diesel", "CNG", ...fleet.map((c) => c.fuel).filter(Boolean)])),
+    [fleet],
+  );
+  const transmissions = useMemo(
+    () => Array.from(new Set(["Manual", ...fleet.map((c) => c.transmission).filter(Boolean)])),
+    [fleet],
+  );
   return (
     <div>
       <div className="mb-5 flex items-center justify-between">
@@ -184,9 +200,9 @@ function Filters({ filters, setFilters, clear }) {
         />
       </div>
       {[
-        ["Segment", "segment", ["SUV", "Compact SUV", "Hatchback"]],
-        ["Fuel type", "fuel", ["Petrol", "Diesel", "CNG"]],
-        ["Transmission", "transmission", ["Manual"]],
+        ["Segment", "segment", segments],
+        ["Fuel type", "fuel", fuels],
+        ["Transmission", "transmission", transmissions],
       ].map(([title, key, options]) => (
         <div className="mb-6" key={key}>
           <p className="mb-2.5 text-xs font-bold uppercase tracking-wider text-slate-500">
@@ -334,25 +350,10 @@ function VehicleCard({ car, onBook }) {
   );
 }
 
-function FleetSection({ onBook }) {
+function FleetSection({ onBook, fleet, isLiveFromDb }) {
   const initial = { search: "", segment: "", fuel: "", transmission: "", sort: "low" };
   const [filters, setFilters] = useState(initial);
   const [drawer, setDrawer] = useState(false);
-  const [fleet, setFleet] = useState(fleetData);
-  const [isLiveFromDb, setIsLiveFromDb] = useState(false);
-
-  useEffect(() => {
-    let isMounted = true;
-    getVehiclesFromSupabase().then((data) => {
-      if (isMounted && data && data.length > 0) {
-        setFleet(data);
-        setIsLiveFromDb(true);
-      }
-    });
-    return () => {
-      isMounted = false;
-    };
-  }, []);
 
   useEffect(() => {
     const handleHeroSearch = ({ detail }) => {
@@ -398,7 +399,7 @@ function FleetSection({ onBook }) {
         </button>
         <div className="grid items-start gap-6 lg:grid-cols-[260px_1fr]">
           <aside className="sticky top-24 hidden rounded-2xl border border-slate-100 bg-white p-6 shadow-sm lg:block">
-            <Filters filters={filters} setFilters={setFilters} clear={() => setFilters(initial)} />
+            <Filters filters={filters} setFilters={setFilters} clear={() => setFilters(initial)} fleet={fleet} />
           </aside>
           <div>
             <div className="mb-6 flex items-center justify-between">
@@ -456,6 +457,7 @@ function FleetSection({ onBook }) {
                 filters={filters}
                 setFilters={setFilters}
                 clear={() => setFilters(initial)}
+                fleet={fleet}
               />
               <button
                 onClick={() => setDrawer(false)}
@@ -471,15 +473,15 @@ function FleetSection({ onBook }) {
   );
 }
 
-function HowItWorks() {
+function HowItWorks({ fleetCount = 11 }) {
   const steps = [
     {
       step: "01",
       icon: Search,
       title: "Choose your car",
-      copy: "Browse our 11-car fleet and pick an hourly or daily plan that fits.",
+      copy: `Browse our ${fleetCount}-car fleet and pick an hourly or daily plan that fits.`,
       image: step1Img,
-      tag: "11-Car Fleet",
+      tag: `${fleetCount}-Car Fleet`,
     },
     {
       step: "02",
@@ -720,6 +722,103 @@ function FAQs() {
   );
 }
 
+function LocationSection() {
+  return (
+    <section id="location" className="section-pad bg-white">
+      <div className="mx-auto max-w-7xl px-6">
+        <SectionTitle
+          eyebrow="Visit Our Branch"
+          title="Find Jalore Self Drive (JSD) on Google Maps"
+          copy="Pick up your car directly from our Jalore branch or request doorstep delivery anywhere in Jalore, Ahore, Bhinmal & Sanchore."
+        />
+        <motion.div
+          {...reveal}
+          className="grid overflow-hidden rounded-[28px] border border-slate-100 bg-[#F8F7FC] shadow-[0_12px_40px_rgba(45,40,102,0.08)] lg:grid-cols-[1fr_1.4fr]"
+        >
+          <div className="flex flex-col justify-between p-8 sm:p-10">
+            <div>
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-[#E8E7F2] px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-[#2D2866]">
+                <MapPin size={13} /> Main Branch Location
+              </span>
+              <h3 className="mt-4 text-2xl font-extrabold tracking-tight text-[#2D2866]">
+                Jalore Self Drive Private Limited (JSD)
+              </h3>
+              <p className="mt-2 text-sm leading-6 text-slate-600">
+                Conveniently located in Jalore for quick vehicle pickup, document verification, and 24/7 handover support.
+              </p>
+
+              <div className="mt-6 space-y-4 text-sm text-slate-700">
+                <div className="flex items-start gap-3">
+                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white text-[#2D2866] shadow-xs border border-slate-100">
+                    <MapPin size={17} />
+                  </span>
+                  <div>
+                    <p className="font-bold text-[#2D2866]">Address</p>
+                    <p className="text-slate-600">Jalore, Rajasthan 343001</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white text-[#2D2866] shadow-xs border border-slate-100">
+                    <Phone size={17} />
+                  </span>
+                  <div>
+                    <p className="font-bold text-[#2D2866]">Phone & WhatsApp</p>
+                    <a href={`tel:${PHONE}`} className="text-slate-600 hover:text-[#2D2866] font-medium">
+                      +91 97835 55555
+                    </a>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white text-[#2D2866] shadow-xs border border-slate-100">
+                    <Clock3 size={17} />
+                  </span>
+                  <div>
+                    <p className="font-bold text-[#2D2866]">Operating Hours</p>
+                    <p className="text-slate-600">Open 24 Hours (Monday – Sunday)</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-8 flex flex-wrap gap-3">
+              <a
+                href={GOOGLE_MAPS_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="btn-primary justify-center"
+              >
+                <MapPin size={16} />
+                <span>Get Directions</span>
+                <ArrowRight size={16} />
+              </a>
+              <a
+                href={waLink("Hi JSD, please share your live office location in Jalore.")}
+                target="_blank"
+                rel="noreferrer"
+                className="btn-secondary justify-center"
+              >
+                <MessageCircle size={16} className="text-emerald-600" />
+                <span>Share Location on WhatsApp</span>
+              </a>
+            </div>
+          </div>
+
+          <div className="relative min-h-[340px] lg:min-h-[440px] bg-slate-200">
+            <iframe
+              title="Jalore Self Drive Private Limited (JSD) Location Map"
+              src={GOOGLE_MAPS_EMBED_URL}
+              className="h-full w-full border-0"
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              allowFullScreen
+            />
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
 function Footer({ isFleetPage = false }) {
   const areas = [
     "Jalore car rent",
@@ -813,15 +912,30 @@ function Footer({ isFleetPage = false }) {
         <div>
           <h3 className="font-bold text-white">Jalore Main Branch</h3>
           <div className="mt-4 space-y-3 text-sm text-slate-400">
-            <p className="flex gap-2">
-              <MapPin size={17} className="shrink-0 text-[#E8E7F2]" /> Jalore, Rajasthan 343001
-            </p>
+            <a
+              href={GOOGLE_MAPS_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="flex gap-2 transition hover:text-white"
+            >
+              <MapPin size={17} className="shrink-0 text-[#E8E7F2]" />
+              <span>Jalore Self Drive (JSD), Jalore, Rajasthan 343001</span>
+            </a>
             <a href={`tel:${PHONE}`} className="flex gap-2 transition hover:text-white">
               <Phone size={17} className="text-[#E8E7F2]" /> +91 97835 55555
             </a>
             <p className="flex gap-2">
               <Headphones size={17} className="text-[#E8E7F2]" /> 24/7 booking support
             </p>
+            <a
+              href={GOOGLE_MAPS_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-1.5 pt-1 text-xs font-bold text-[#E8E7F2] hover:text-white transition"
+            >
+              <span>Open in Google Maps</span>
+              <ArrowRight size={14} />
+            </a>
           </div>
         </div>
       </div>
@@ -1037,6 +1151,7 @@ function AuthModal({ isOpen, onClose }) {
 }
 
 export default function App() {
+  const { fleet, isLiveFromDb } = useLiveFleet();
   const [selectedCar, setSelectedCar] = useState(null);
   const [authOpen, setAuthOpen] = useState(false);
   const [pathname, setPathname] = useState(
@@ -1085,7 +1200,7 @@ export default function App() {
                       Self-Drive Car Fleet in Jalore
                     </h1>
                     <p className="mt-2 text-sm text-slate-300">
-                      Browse our full range of 11 sanitized, road-ready hatchbacks and SUVs.
+                      Browse our full range of {fleet.length} sanitized, road-ready hatchbacks and SUVs.
                     </p>
                   </div>
                   <button
@@ -1097,7 +1212,7 @@ export default function App() {
                   </button>
                 </div>
               </div>
-              <FleetSection onBook={setSelectedCar} />
+              <FleetSection onBook={setSelectedCar} fleet={fleet} isLiveFromDb={isLiveFromDb} />
             </motion.div>
           ) : (
             <motion.div
@@ -1110,9 +1225,10 @@ export default function App() {
               <HeroSection />
               <BestSellingModels />
               <WhySection />
-              <HowItWorks />
+              <HowItWorks fleetCount={fleet.length} />
               <OffersReviews />
               <FAQs />
+              <LocationSection />
             </motion.div>
           )}
         </AnimatePresence>

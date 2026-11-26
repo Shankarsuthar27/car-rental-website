@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import { arrowRightSvg, jsdHeroSuv } from "../assets/images";
-import { fleetData, getVehiclesFromSupabase } from "../data/fleetData";
+import { useLiveFleet } from "../data/fleetData";
 import { navigate } from "../utils/navigation";
 
 function formatTitleCase(str = "") {
@@ -18,8 +18,15 @@ function formatTitleCase(str = "") {
 }
 
 export default function BestSellingModels() {
-  const [vehicles, setVehicles] = useState(fleetData);
+  const { fleet: vehicles } = useLiveFleet();
   const [activeIndex, setActiveIndex] = useState(0);
+
+  // Clamp activeIndex if vehicles count changes dynamically
+  useEffect(() => {
+    if (vehicles.length > 0 && activeIndex >= vehicles.length) {
+      setActiveIndex(0);
+    }
+  }, [vehicles.length, activeIndex]);
 
   // Responsive slide width: adapts dynamically between mobile and desktop
   const [slideWidth, setSlideWidth] = useState(324);
@@ -49,19 +56,6 @@ export default function BestSellingModels() {
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  // Fetch real cars from Supabase on mount
-  useEffect(() => {
-    let isMounted = true;
-    getVehiclesFromSupabase().then((data) => {
-      if (isMounted && Array.isArray(data) && data.length > 0) {
-        setVehicles(data);
-      }
-    });
-    return () => {
-      isMounted = false;
-    };
   }, []);
 
   const cloneCount = useMemo(() => {

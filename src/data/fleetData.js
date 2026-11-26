@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   hyundaiCreta,
   mahindraScorpio,
@@ -6,7 +7,7 @@ import {
   toyotaInnovaCrysta,
   jsdHeroSuv,
 } from "../assets/images";
-import { getVehiclesFromSupabase } from "../services/supabase";
+import { getVehiclesFromSupabase, subscribeToVehicles, refreshVehicles } from "../services/supabase";
 
 export const initialFleetData = [
   {
@@ -188,4 +189,19 @@ export const initialFleetData = [
 ];
 
 export const fleetData = initialFleetData;
-export { getVehiclesFromSupabase };
+export { getVehiclesFromSupabase, refreshVehicles };
+
+export function useLiveFleet() {
+  const [state, setState] = useState({
+    fleet: initialFleetData,
+    isLiveFromDb: false,
+  });
+
+  useEffect(() => {
+    return subscribeToVehicles(initialFleetData, (nextState) => {
+      setState(nextState);
+    });
+  }, []);
+
+  return state;
+}
