@@ -26,7 +26,7 @@ import {
   X,
   Zap,
 } from "lucide-react";
-import { fleetData } from "./data/fleetData";
+import { fleetData, getVehiclesFromSupabase } from "./data/fleetData";
 import Navbar from "./components/Navbar";
 import HeroSection from "./components/HeroSection";
 import BestSellingModels from "./components/BestSellingModels";
@@ -237,8 +237,12 @@ function VehicleCard({ car, onBook }) {
       className="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-[0_8px_30px_rgba(45,40,102,0.06)] transition-all hover:shadow-[0_16px_40px_rgba(45,40,102,0.12)]"
     >
       <div className={`relative h-48 overflow-hidden bg-gradient-to-br ${car.tone}`}>
-        <span className="absolute left-3 top-3 z-10 rounded-full bg-emerald-600 px-3 py-1 text-[10px] font-black tracking-wider text-white shadow-sm">
-          AVAILABLE
+        <span
+          className={`absolute left-3 top-3 z-10 rounded-full px-3 py-1 text-[10px] font-black tracking-wider text-white shadow-sm uppercase ${
+            car.status === "available" ? "bg-emerald-600" : "bg-amber-600"
+          }`}
+        >
+          {car.status || "AVAILABLE"}
         </span>
         <span className="absolute right-3 top-3 z-10 rounded-full bg-white/95 px-3 py-1 text-[11px] font-extrabold text-[#2D2866] shadow-sm backdrop-blur">
           {car.year} MODEL
@@ -248,8 +252,9 @@ function VehicleCard({ car, onBook }) {
           alt={`${car.name} rental car`}
           className="h-full w-full scale-105 object-contain p-2 mix-blend-multiply transition duration-500 hover:scale-115"
           onError={(e) => {
-            if (e.currentTarget.src !== jsdHeroSuv) {
-              e.currentTarget.src = jsdHeroSuv;
+            const fallback = car.fallbackImage || jsdHeroSuv;
+            if (e.currentTarget.src !== fallback) {
+              e.currentTarget.src = fallback;
             }
           }}
         />
@@ -320,6 +325,21 @@ function FleetSection({ onBook }) {
   const initial = { search: "", segment: "", fuel: "", transmission: "", sort: "low" };
   const [filters, setFilters] = useState(initial);
   const [drawer, setDrawer] = useState(false);
+  const [fleet, setFleet] = useState(fleetData);
+  const [isLiveFromDb, setIsLiveFromDb] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+    getVehiclesFromSupabase().then((data) => {
+      if (isMounted && data && data.length > 0) {
+        setFleet(data);
+        setIsLiveFromDb(true);
+      }
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   useEffect(() => {
     const handleHeroSearch = ({ detail }) => {
@@ -333,7 +353,7 @@ function FleetSection({ onBook }) {
   }, []);
 
   const cars = useMemo(() => {
-    const result = fleetData.filter(
+    const result = fleet.filter(
       (car) =>
         (!filters.search || car.name.toLowerCase().includes(filters.search.toLowerCase())) &&
         (!filters.segment || car.segment === filters.segment) &&
@@ -347,7 +367,7 @@ function FleetSection({ onBook }) {
           ? b.year - a.year
           : a.dailyRate - b.dailyRate,
     );
-  }, [filters]);
+  }, [filters, fleet]);
 
   return (
     <section id="fleet" className="section-pad bg-[#F8F7FC]">
@@ -372,8 +392,9 @@ function FleetSection({ onBook }) {
               <p className="text-sm font-semibold text-slate-500">
                 <b className="text-[#2D2866]">{cars.length}</b> cars available
               </p>
-              <span className="rounded-full bg-emerald-50 px-3.5 py-1 text-xs font-bold text-emerald-700 border border-emerald-100">
-                Live availability
+              <span className="rounded-full bg-emerald-50 px-3.5 py-1 text-xs font-bold text-emerald-700 border border-emerald-100 flex items-center gap-1.5 shadow-sm">
+                <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>{isLiveFromDb ? "Live Supabase Database" : "Live availability"}</span>
               </span>
             </div>
             <motion.div layout className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
