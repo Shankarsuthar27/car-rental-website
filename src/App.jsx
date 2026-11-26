@@ -31,6 +31,8 @@ import Navbar from "./components/Navbar";
 import HeroSection from "./components/HeroSection";
 import BestSellingModels from "./components/BestSellingModels";
 import { navigate } from "./utils/navigation";
+import logoImg from "./assets/logo";
+import { resolveAsset, handleImageFallback } from "./utils/assets";
 
 const PHONE = "+919783555555";
 const WHATSAPP = "919783555555";
@@ -237,7 +239,8 @@ function VehicleCard({ car, onBook }) {
           {car.year} MODEL
         </span>
         <img
-          src="/images/jsd-hero-suv.png"
+          src={resolveAsset("/images/jsd-hero-suv.png")}
+          onError={handleImageFallback}
           alt={`${car.name} rental car`}
           className="h-full w-full scale-110 object-cover mix-blend-multiply transition duration-500 hover:scale-[1.16]"
         />
@@ -473,7 +476,8 @@ function HowItWorks() {
                 {/* Visual Image Banner with Badges */}
                 <div className="relative h-64 sm:h-72 w-full overflow-hidden rounded-2xl bg-slate-50">
                   <img
-                    src={item.image}
+                    src={resolveAsset(item.image)}
+                    onError={handleImageFallback}
                     alt={item.title}
                     className="h-full w-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-105"
                   />
@@ -706,7 +710,7 @@ function Footer({ isFleetPage = false }) {
           <div className="flex items-center gap-3">
             <div className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-xl bg-white border border-slate-700/40 shadow-md">
               <img
-                src="/images/logo.jpg"
+                src={logoImg}
                 alt="Jalore Self Drive Logo"
                 className="h-full w-full object-contain"
               />
@@ -896,7 +900,7 @@ function AuthModal({ isOpen, onClose }) {
         <div className="mb-6 flex items-center gap-3.5">
           <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-2xl bg-white border border-slate-100 shadow-md shadow-[#2D2866]/10">
             <img
-              src="/images/logo.jpg"
+              src={logoImg}
               alt="Jalore Self Drive Logo"
               className="h-full w-full object-contain"
             />

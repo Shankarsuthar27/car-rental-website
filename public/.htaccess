@@ -1,0 +1,35 @@
+# Apache / LiteSpeed configuration for Hostinger (React SPA)
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Allow direct access to existing files and directories (images, assets, css, js)
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Route all other URLs to index.html for client-side routing
+  RewriteRule ^ index.html [L]
+</IfModule>
+
+# Ensure proper MIME types for images, fonts and scripts
+<IfModule mod_mime.c>
+  AddType image/jpeg .jpg .jpeg
+  AddType image/png .png
+  AddType image/svg+xml .svg
+  AddType image/x-icon .ico
+  AddType image/webp .webp
+  AddType text/javascript .js .mjs
+  AddType text/css .css
+</IfModule>
+
+# Enable browser caching for static assets
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType image/jpeg "access plus 1 year"
+  ExpiresByType image/png "access plus 1 year"
+  ExpiresByType image/svg+xml "access plus 1 year"
+  ExpiresByType image/x-icon "access plus 1 year"
+  ExpiresByType text/css "access plus 1 month"
+  ExpiresByType text/javascript "access plus 1 month"
+</IfModule>

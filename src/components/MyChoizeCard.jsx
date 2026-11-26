@@ -1,4 +1,5 @@
 import React from "react";
+import { resolveAsset, handleImageFallback } from "../utils/assets";
 
 /**
  * Rebuilt UI Component: `div.top_sec`
@@ -32,12 +33,10 @@ export function TopSec({
       }}
     >
       <img
-        src={localImage}
+        src={resolveAsset(localImage)}
         alt={alt}
         onError={(e) => {
-          if (e.currentTarget.src !== image) {
-            e.currentTarget.src = image;
-          }
+          handleImageFallback(e, image);
         }}
         style={{
           position: "relative",
@@ -96,11 +95,11 @@ export default function MyChoizeCard({
           style={{ display: "flex", alignItems: "center" }}
         >
           <img
-            src="/images/icons/mini_car.svg"
+            src={resolveAsset("/images/icons/mini_car.svg")}
             alt=""
             style={{ width: "18px", height: "15px", display: "inline-block" }}
             onError={(e) => {
-              e.currentTarget.style.display = "none";
+              handleImageFallback(e);
             }}
           />
           <p
@@ -160,10 +159,13 @@ export default function MyChoizeCard({
           >
             View Details
             <img
-              src="/images/icons/arrow_right.svg"
+              src={resolveAsset("/images/icons/arrow_right.svg")}
               className="arrow_img"
               alt=""
               style={{ width: "14px", height: "14px", display: "inline-block" }}
+              onError={(e) => {
+                handleImageFallback(e);
+              }}
             />
           </a>
         </div>

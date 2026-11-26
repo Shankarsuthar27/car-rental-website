@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { resolveAsset, handleImageFallback } from "../utils/assets";
 
 // The 5 core vehicle models in MyChoize fleet
 const baseModels = [
@@ -468,22 +469,20 @@ export default function BestSellingModels() {
                           <div className="typ_crd">
                             <div className="top_sec">
                               <img
-                                src={item.localImg}
+                                src={resolveAsset(item.localImg)}
                                 alt={item.alt}
                                 onError={(e) => {
-                                  if (e.currentTarget.src !== item.remoteImg) {
-                                    e.currentTarget.src = item.remoteImg;
-                                  }
+                                  handleImageFallback(e, item.remoteImg);
                                 }}
                               />
                             </div>
                             <div className="btm_sec pt-3 pb-2">
                               <div className="d-flex align-items-center">
                                 <img
-                                  src="/images/icons/mini_car.svg"
+                                  src={resolveAsset("/images/icons/mini_car.svg")}
                                   alt=""
                                   onError={(e) => {
-                                    e.currentTarget.style.display = "none";
+                                    handleImageFallback(e);
                                   }}
                                 />
                                 <p className="font_size_13_mobile">{item.brand}</p>
@@ -501,9 +500,12 @@ export default function BestSellingModels() {
                                 >
                                   View Details
                                   <img
-                                    src="/images/icons/arrow_right.svg"
+                                    src={resolveAsset("/images/icons/arrow_right.svg")}
                                     className="arrow_img"
                                     alt=""
+                                    onError={(e) => {
+                                      handleImageFallback(e);
+                                    }}
                                   />
                                 </a>
                               </div>

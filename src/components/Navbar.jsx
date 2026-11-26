@@ -2,6 +2,7 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown, Menu, MessageCircle, Phone, Sparkles, User, X } from "lucide-react";
 import { navigate } from "../utils/navigation";
+import logoImg from "../assets/logo";
 
 // Steering wheel icon accent SVG
 function SteeringWheelIcon({ className = "w-4 h-4" }) {
@@ -73,11 +74,7 @@ export default function Navbar({ onOpenAuth }) {
           className="group flex items-center gap-3 cursor-pointer"
         >
           <div className="relative flex h-11 w-11 items-center justify-center overflow-hidden rounded-xl bg-white border border-slate-100 shadow-md shadow-[#2D2866]/15 transition-transform group-hover:scale-105">
-            <img
-              src="/images/logo.jpg"
-              alt="Jalore Self Drive"
-              className="h-full w-full object-contain"
-            />
+            <img src={logoImg} alt="Jalore Self Drive" className="h-full w-full object-contain" />
           </div>
           <div className="leading-tight">
             <div className="flex items-center gap-1.5 font-extrabold tracking-tight text-base text-[#2D2866] sm:text-lg">
@@ -260,7 +257,7 @@ export default function Navbar({ onOpenAuth }) {
                   >
                     <div className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border border-slate-200 bg-white shadow-sm">
                       <img
-                        src="/images/logo.jpg"
+                        src={logoImg}
                         alt="Jalore Self Drive"
                         className="h-full w-full object-cover"
                       />
