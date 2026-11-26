@@ -102,9 +102,9 @@ function WhySection() {
     <section id="why" className="section-pad bg-white">
       <div className="mx-auto max-w-7xl px-6">
         <SectionTitle
-          eyebrow="Made for local journeys"
-          title="Why Jalore drives with JSD"
-          copy="Reliable cars, straightforward pricing, and friendly local support—from first message to final drop-off."
+          eyebrow="Why Choose JSD"
+          title="Why Choose Jalore Self Drive for Car Rental in Jalore?"
+          copy="Reliable cars, straightforward pricing, 300 km/day flexible plans, and friendly local support—from first WhatsApp message to final drop-off."
         />
         <motion.div
           initial="hidden"
@@ -249,7 +249,7 @@ function VehicleCard({ car, onBook }) {
         </span>
         <img
           src={car.image || jsdHeroSuv}
-          alt={`${car.name} rental car`}
+          alt={`${car.name} self drive car for rent in Jalore`}
           className="h-full w-full scale-105 object-contain p-2 mix-blend-multiply transition duration-500 hover:scale-115"
           onError={(e) => {
             const fallback = car.fallbackImage || jsdHeroSuv;
@@ -260,9 +260,22 @@ function VehicleCard({ car, onBook }) {
         />
       </div>
       <div className="p-5">
-        <p className="text-[11px] font-bold uppercase tracking-wider text-[#2D2866]">
-          {car.segment}
-        </p>
+        <div className="flex items-center justify-between gap-2">
+          <p className="text-[11px] font-bold uppercase tracking-wider text-[#2D2866]">
+            {car.segment}
+          </p>
+          <span className="text-[10px] font-bold text-slate-500">
+            {car.name.toLowerCase().includes("scorpio")
+              ? "Scorpio rent in Jalore"
+              : car.name.toLowerCase().includes("swift")
+                ? "Swift self drive Jalore"
+                : car.seats >= 7
+                  ? "7 seater car rent Jalore"
+                  : car.segment.toLowerCase().includes("suv")
+                    ? "SUV rental Jalore"
+                    : "Self drive car in Jalore"}
+          </span>
+        </div>
         <h3 className="mt-1 text-xl font-extrabold tracking-tight text-[#2D2866]">{car.name}</h3>
         <p className="mt-1 flex items-center gap-1 text-xs text-slate-500">
           <MapPin size={12} className="text-[#2D2866]" /> {car.branch}
@@ -373,9 +386,9 @@ function FleetSection({ onBook }) {
     <section id="fleet" className="section-pad bg-[#F8F7FC]">
       <div className="mx-auto max-w-7xl px-6">
         <SectionTitle
-          eyebrow="Choose your drive"
-          title="A car for every Rajasthan road"
-          copy="From agile hatchbacks for city runs to commanding SUVs for long highway journeys."
+          eyebrow="Self-Drive Car Fleet"
+          title="Best Selling Cars for Rent in Jalore (Hatchbacks, Sedans & SUVs)"
+          copy="Rent a car without driver in Jalore with flexible hourly car rental and daily car rent options. From agile hatchbacks to commanding 7-seater SUVs."
         />
         <button
           onClick={() => setDrawer(true)}
@@ -489,8 +502,9 @@ function HowItWorks() {
     <section id="how" className="section-pad bg-white">
       <div className="mx-auto max-w-7xl px-6">
         <SectionTitle
-          eyebrow="Easy from search to street"
-          title="Your keys in three simple steps"
+          eyebrow="Service Areas & Doorstep Delivery"
+          title="Self-Drive Car Pickup & Doorstep Delivery Across Jalore, Bhinmal & Sanchore"
+          copy="Get your sanitized car delivered directly to your location in Jalore, Ahore, Bhinmal, Sanchore, and nearby towns in 3 simple steps."
         />
         <div className="grid gap-8 md:grid-cols-3">
           {steps.map((item, i) => {
@@ -585,7 +599,7 @@ function OffersReviews() {
                   <span className="rounded-full bg-[#E8E7F2] px-3.5 py-1 text-xs font-bold text-[#2D2866]">
                     OFFER 0{i + 1}
                   </span>
-                  <Sparkles className="text-amber-300" />
+                  
                 </div>
                 <h3 className="text-2xl font-extrabold text-white">{title}</h3>
                 <p className="mt-1 text-3xl font-black text-[#E8E7F2]">{deal}</p>
@@ -642,24 +656,24 @@ function FAQs() {
   const [open, setOpen] = useState(0);
   const items = [
     [
-      "Is there a security deposit?",
+      "Is there a security deposit for car rental in Jalore?",
       "A refundable security deposit may apply based on the car and trip duration. Our team confirms the exact amount before booking, with no hidden surprises.",
     ],
     [
       "What does the 300 km/24h limit mean?",
-      "Each 24-hour daily booking includes up to 300 kilometres of driving. Multi-day bookings include 300 km for each booked day.",
+      "Each 24-hour daily booking includes up to 300 kilometres of driving. Multi-day bookings include 300 km for each booked day across Jalore, Rajasthan.",
     ],
     [
       "What are the extra kilometre charges?",
-      "Extra-kilometre charges vary by vehicle. Ask our booking team for the exact rate for your selected car before confirming.",
+      "Extra-kilometre charges vary by vehicle (typically ₹10-₹15/km). Ask our booking team on WhatsApp for the exact rate for your selected car before confirming.",
     ],
     [
-      "Which documents do I need?",
-      "You need a valid driving licence and Aadhaar card. Additional verification may be requested during quick KYC.",
+      "Which documents are required for self drive car in Jalore?",
+      "You need a valid original driving licence and an Aadhaar card (or government ID). Quick KYC verification is completed securely via WhatsApp within minutes.",
     ],
     [
-      "Can you deliver the car to my doorstep?",
-      "Yes, doorstep delivery is available in and around Jalore depending on distance, timing, and vehicle availability.",
+      "Can you deliver the car to my doorstep in Jalore, Bhinmal or Sanchore?",
+      "Yes, doorstep car delivery and pickup are available across Jalore, Bhinmal, Sanchore, Ahore, and nearby areas depending on distance and vehicle availability.",
     ],
   ];
   return (
@@ -675,7 +689,8 @@ function FAQs() {
               <button
                 type="button"
                 onClick={() => setOpen(open === i ? -1 : i)}
-                className="flex w-full items-center justify-between gap-4 p-5 text-left font-bold text-[#2D2866]"
+                aria-expanded={open === i}
+                className="flex w-full items-center justify-between gap-4 p-5 text-left font-bold text-[#2D2866] cursor-pointer"
               >
                 <span>{question}</span>
                 <ChevronDown
@@ -685,17 +700,16 @@ function FAQs() {
                   size={20}
                 />
               </button>
-              <AnimatePresence initial={false}>
-                {open === i && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                  >
-                    <p className="px-5 pb-5 text-sm leading-6 text-slate-600">{answer}</p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              {/* Answer is always mounted in HTML DOM for Googlebot and search engines */}
+              <div
+                className={`grid transition-[grid-template-rows,opacity] duration-300 ease-out ${
+                  open === i ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                }`}
+              >
+                <div className="overflow-hidden">
+                  <p className="px-5 pb-5 text-sm leading-6 text-slate-600">{answer}</p>
+                </div>
+              </div>
             </div>
           ))}
         </div>
@@ -706,14 +720,15 @@ function FAQs() {
 
 function Footer({ isFleetPage = false }) {
   const areas = [
-    "Jalore",
-    "Ahore",
-    "Bhinmal",
-    "Sanchore",
+    "Jalore car rent",
+    "car rent Bhinmal",
+    "car rent Sanchore",
+    "car rent Ahore",
     "Raniwara",
     "Falna",
     "Sumerpur",
-    "Jodhpur & Udaipur trips",
+    "Jalore to Jodhpur car rental",
+    "Jalore to Udaipur self drive car",
   ];
   return (
     <footer id="footer" className="bg-[#1F1B4D] pb-20 text-white md:pb-0">

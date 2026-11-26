@@ -8,14 +8,18 @@ import {
 } from "../assets/images";
 
 export const SUPABASE_URL =
-  (typeof import.meta !== "undefined" && import.meta.env?.VITE_SUPABASE_URL) ||
-  (typeof process !== "undefined" && process.env?.NEXT_PUBLIC_SUPABASE_URL) ||
-  "https://tmnqhuklppoxucpcypif.supabase.co";
+  (typeof import.meta !== "undefined" &&
+    (import.meta.env?.VITE_SUPABASE_URL || import.meta.env?.NEXT_PUBLIC_SUPABASE_URL)) ||
+  (typeof process !== "undefined" &&
+    (process.env?.VITE_SUPABASE_URL || process.env?.NEXT_PUBLIC_SUPABASE_URL)) ||
+  "";
 
 export const SUPABASE_ANON_KEY =
-  (typeof import.meta !== "undefined" && import.meta.env?.VITE_SUPABASE_ANON_KEY) ||
-  (typeof process !== "undefined" && process.env?.NEXT_PUBLIC_SUPABASE_ANON_KEY) ||
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRtbnFodWtscHBveHVjcGN5cGlmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcyODYwODUsImV4cCI6MjEwMjg2MjA4NX0.jx9gOE3Hu4oYRZxeDJJWQk1xar8fANOnCZ4pDrzdUxw";
+  (typeof import.meta !== "undefined" &&
+    (import.meta.env?.VITE_SUPABASE_ANON_KEY || import.meta.env?.NEXT_PUBLIC_SUPABASE_ANON_KEY)) ||
+  (typeof process !== "undefined" &&
+    (process.env?.VITE_SUPABASE_ANON_KEY || process.env?.NEXT_PUBLIC_SUPABASE_ANON_KEY)) ||
+  "";
 
 // Color tones for vehicle cards
 const cardTones = [
@@ -125,6 +129,9 @@ export function transformVehicle(v, index = 0) {
  * Returns formatted array of vehicles sorted by daily_rate asc.
  */
 export async function getVehiclesFromSupabase() {
+  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+    return null;
+  }
   try {
     const url = `${SUPABASE_URL}/rest/v1/vehicles?select=*,vehicle_images(*)&is_active=eq.true&order=daily_rate.asc`;
     const response = await fetch(url, {

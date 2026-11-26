@@ -12,6 +12,7 @@ export default defineConfig(({ mode }) => {
   const emitSourcemaps = mode === "development";
 
   return {
+    envPrefix: ["VITE_", "NEXT_PUBLIC_"],
     define: {
       __BUNDLED_DEV__: false,
     },

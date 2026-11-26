@@ -8,7 +8,7 @@ import {
   MapPin,
   Search,
   ShieldCheck,
-  Sparkles,
+  
 } from "lucide-react";
 import { navigate } from "../utils/navigation";
 import CalendarPickerModal, { toIsoDateTime } from "./CalendarPickerModal";
@@ -664,7 +664,17 @@ export default function HeroSection({ onSearchSubmit }) {
         <div className="mt-12 grid grid-cols-1 items-center gap-8 lg:grid-cols-12 lg:gap-6 lg:mt-16">
           {/* Lower-Left Content: Editorial Slider */}
           <div className="lg:col-span-6">
-            <div className="min-h-[140px]">
+            <div>
+              <div className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-[#2D2866]">
+               
+                <span>Jalore Self Drive Advantage</span>
+              </div>
+              <h1 className="text-3xl font-extrabold tracking-tight text-[#2D2866] sm:text-4xl lg:text-[42px] leading-tight">
+                Self Drive Car Rent in Jalore – <span className="text-[#3E3889]">Drive on Your Terms</span>
+              </h1>
+            </div>
+
+            <div className="mt-4 min-h-[90px]">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeSlide}
@@ -673,14 +683,11 @@ export default function HeroSection({ onSearchSubmit }) {
                   exit={{ opacity: 0, x: 16 }}
                   transition={{ duration: 0.38, ease: "easeOut" }}
                 >
-                  <div className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-[#2D2866]">
-                    <Sparkles size={14} />
-                    <span>Jalore Self Drive Advantage</span>
-                  </div>
-                  <h1 className="text-3xl font-extrabold tracking-tight text-[#2D2866] sm:text-4xl lg:text-[42px] leading-tight">
+                  <p className="inline-flex items-center gap-1.5 rounded-full bg-[#2D2866]/5 px-3 py-1 text-xs font-bold text-[#2D2866]">
+                    
                     {slides[activeSlide].title}
-                  </h1>
-                  <p className="mt-3 max-w-lg text-sm md:text-base leading-relaxed text-slate-500">
+                  </p>
+                  <p className="mt-2.5 max-w-lg text-sm md:text-base leading-relaxed text-slate-600">
                     {slides[activeSlide].subtitle}
                   </p>
                 </motion.div>

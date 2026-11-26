@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronDown, Menu, MessageCircle, Phone, Sparkles, User, X } from "lucide-react";
+import { ChevronDown, Menu, MessageCircle, Phone, User, X } from "lucide-react";
 import { navigate } from "../utils/navigation";
 import logoImg from "../assets/logo";
 

@@ -16,7 +16,7 @@ const baseModels = [
     id: "mahindra-tuv-300",
     brand: "Mahindra",
     model: "TUV 300",
-    alt: "TUV 300 Car Rental",
+    alt: "Mahindra TUV 300 SUV rental Jalore",
     localImg: mahindraXuv300,
     remoteImg: "https://www.mychoize.com/mychoize-live/current/files/fleets/Mahindra_XUV_300.jpg",
     link: "https://www.mychoize.com/fleets/mahindra-tuv-300",
@@ -26,7 +26,7 @@ const baseModels = [
     id: "hyundai-creta",
     brand: "Hyundai",
     model: "Creta",
-    alt: "Creta Car Rental",
+    alt: "Hyundai Creta self drive car rental in Jalore",
     localImg: hyundaiCreta,
     remoteImg: "https://www.mychoize.com/mychoize-live/current/files/fleets/Hyundai_Creta.jpg",
     link: "https://www.mychoize.com/fleets/hyundai-creta",
@@ -36,7 +36,7 @@ const baseModels = [
     id: "toyota-innova-crysta",
     brand: "Toyota",
     model: "Innova Crysta",
-    alt: "Innova Crysta Car Rental",
+    alt: "Toyota Innova Crysta 7 seater car rent Jalore",
     localImg: toyotaInnovaCrysta,
     remoteImg:
       "https://www.mychoize.com/mychoize-live/current/files/fleets/Toyota_Innova_Crysta.jpg",
@@ -47,7 +47,7 @@ const baseModels = [
     id: "maruti-ciaz",
     brand: "Maruti",
     model: "Ciaz",
-    alt: "Ciaz Car Rental",
+    alt: "Maruti Ciaz sedan car rent Jalore",
     localImg: marutiCiaz,
     remoteImg: "https://www.mychoize.com/mychoize-live/current/files/fleets/Maruti_Ciaz.jpg",
     link: "https://www.mychoize.com/fleets/maruti-ciaz",
@@ -57,7 +57,7 @@ const baseModels = [
     id: "mahindra-scorpio",
     brand: "Mahindra",
     model: "Scorpio",
-    alt: "Scorpio Car Rental",
+    alt: "Mahindra Scorpio rent in Jalore",
     localImg: mahindraScorpio,
     remoteImg: "https://www.mychoize.com/mychoize-live/current/files/fleets/Mahindra_Scorpio.jpg",
     link: "https://www.mychoize.com/fleets/mahindra-scorpio",
@@ -419,7 +419,7 @@ export default function BestSellingModels() {
       <div className="container jodhpur-carousel block w-full max-w-[1320px] px-3 mx-auto font-sans text-base leading-normal text-[#212529] cursor-crosshair">
         <div className="heading">
           <div className="heading_title">
-            <h2>Best Selling Models for Car Rental</h2>
+            <h2>Best Selling Models for Car Rental in Jalore</h2>
           </div>
         </div>
 
