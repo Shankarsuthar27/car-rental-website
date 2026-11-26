@@ -509,12 +509,7 @@ export default function BestSellingModels() {
             <h2>Best Selling Models for Car Rental in Jalore</h2>
           </div>
           {/* Hand sliding hint badge for users on both mobile & desktop */}
-          <div className="flex items-center justify-center gap-2 mt-2 text-xs font-medium text-slate-500">
-            <span className="inline-block text-sm">👆</span>
-            <span>Drag or swipe with hand to slide cars</span>
-            <span className="text-slate-300">•</span>
-            <span className="text-slate-400">{vehicles.length} cars available</span>
-          </div>
+          
         </div>
 
         <div className="models_typ owl-carousel">
