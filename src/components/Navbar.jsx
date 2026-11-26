@@ -26,8 +26,8 @@ function SteeringWheelIcon({ className = "w-4 h-4" }) {
   );
 }
 
-const PHONE = "+919783555555";
-const WHATSAPP = "919783555555";
+const PHONE = "+919660675406";
+const WHATSAPP = "919660675406";
 
 export default function Navbar({ onOpenAuth }) {
   const [mobileOpen, setMobileOpen] = useState(false);

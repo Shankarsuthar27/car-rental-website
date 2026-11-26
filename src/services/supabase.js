@@ -253,3 +253,73 @@ export function subscribeToVehicles(fallbackFleet, listener) {
 export function refreshVehicles() {
   return syncVehiclesNow();
 }
+
+const ADMIN_USER_ID =
+  (typeof import.meta !== "undefined" &&
+    (import.meta.env?.VITE_SUPABASE_ADMIN_USER_ID || import.meta.env?.VITE_ADMIN_USER_ID)) ||
+  "";
+
+/**
+ * Store a customer booking request inside the Supabase `notifications` table.
+ */
+export async function submitBookingNotification({
+  car,
+  customerName,
+  phone,
+  plan,
+  pickupDate,
+  returnDate,
+  pickupLocation,
+  notes,
+}) {
+  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+    throw new Error("Supabase configuration is missing.");
+  }
+
+  const rate = plan === "Daily" ? car.dailyRate : car.hourlyRate;
+  const rateUnit = plan === "Daily" ? "day" : "hr";
+
+  const payload = {
+    title: `New Booking Request: ${car.name}`,
+    body: `${customerName} (${phone}) wants to book ${car.name} (${plan} @ ₹${rate}/${rateUnit}) from ${pickupDate}${returnDate ? ` to ${returnDate}` : ""} • Location: ${pickupLocation || "Jalore Main Branch"}${notes ? ` • Note: ${notes}` : ""}`,
+    type: "booking_created",
+    is_read: false,
+    data: {
+      vehicle_id: car.id,
+      vehicle_name: car.name,
+      registration_number: car.registrationNumber || null,
+      customer_name: customerName,
+      phone,
+      plan,
+      rate,
+      pickup_date: pickupDate,
+      return_date: returnDate || null,
+      pickup_location: pickupLocation || "Jalore Main Branch",
+      notes: notes || "",
+      source: "website_booking_form",
+      submitted_at: new Date().toISOString(),
+    },
+  };
+
+  if (ADMIN_USER_ID) {
+    payload.user_id = ADMIN_USER_ID;
+  }
+
+  const response = await fetch(`${SUPABASE_URL}/rest/v1/notifications`, {
+    method: "POST",
+    headers: {
+      apikey: SUPABASE_ANON_KEY,
+      Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+      "Content-Type": "application/json",
+      Prefer: "return=minimal",
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    const errText = await response.text();
+    throw new Error(errText || `Failed to save booking notification (${response.status})`);
+  }
+
+  return true;
+}

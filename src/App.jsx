@@ -27,6 +27,7 @@ import {
   Zap,
 } from "lucide-react";
 import { fleetData, useLiveFleet } from "./data/fleetData";
+import { submitBookingNotification } from "./services/supabase";
 import Navbar from "./components/Navbar";
 import HeroSection from "./components/HeroSection";
 import BestSellingModels from "./components/BestSellingModels";
@@ -39,8 +40,8 @@ import {
   logoImg,
 } from "./assets/images";
 
-const PHONE = "+919783555555";
-const WHATSAPP = "919783555555";
+const PHONE = "+919660675406";
+const WHATSAPP = "919660675406";
 const GOOGLE_MAPS_URL =
   "https://www.google.com/maps/place/JALORE+SELF+DRIVE+PRIVATE+LIMITED(JSD)/@25.3410837,72.6205741,16z/data=!4m6!3m5!1s0x394301683d9d3119:0x643e4f0063ebbf63!8m2!3d25.3390644!4d72.6284961!16s%2Fg%2F11zfs3fnw0";
 const GOOGLE_MAPS_EMBED_URL =
@@ -778,7 +779,7 @@ function LocationSection() {
                   <div>
                     <p className="font-bold text-[#2D2866]">Phone & WhatsApp</p>
                     <a href={`tel:${PHONE}`} className="text-slate-600 hover:text-[#2D2866] font-medium">
-                      +91 97835 55555
+                      +91 96606 75406
                     </a>
                   </div>
                 </div>
@@ -936,7 +937,7 @@ function Footer({ isFleetPage = false }) {
               <span>Jalore Self Drive (JSD), Jalore, Rajasthan 343001</span>
             </a>
             <a href={`tel:${PHONE}`} className="flex gap-2 transition hover:text-white">
-              <Phone size={17} className="text-[#E8E7F2]" /> +91 97835 55555
+              <Phone size={17} className="text-[#E8E7F2]" /> +91 96606 75406
             </a>
             <p className="flex gap-2">
               <Headphones size={17} className="text-[#E8E7F2]" /> 24/7 booking support
@@ -961,17 +962,68 @@ function Footer({ isFleetPage = false }) {
 }
 
 function BookingModal({ car, onClose }) {
-  const [date, setDate] = useState("");
+  const [customerName, setCustomerName] = useState("");
+  const [phone, setPhone] = useState("");
   const [plan, setPlan] = useState("Daily");
+  const [pickupDate, setPickupDate] = useState("");
+  const [returnDate, setReturnDate] = useState("");
+  const [pickupLocation, setPickupLocation] = useState("Jalore Main Branch");
+  const [notes, setNotes] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+
   if (!car) return null;
-  const message = `Hi JSD, I want to book the ${car.name} on ${
-    date || "my selected date"
-  } at ₹${money(plan === "Daily" ? car.dailyRate : car.hourlyRate)}/${
+
+  const rate = plan === "Daily" ? car.dailyRate : car.hourlyRate;
+  const message = `Hi JSD, I submitted a booking request for ${car.name} (${plan} @ ₹${money(rate)}/${
     plan === "Daily" ? "day" : "hr"
-  }. Please confirm availability.`;
+  }). Name: ${customerName || "-"}, Phone: ${phone || "-"}, Pickup: ${pickupDate || "-"}, Return: ${
+    returnDate || "-"
+  }, Location: ${pickupLocation}.`;
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setErrorMsg("");
+
+    if (!customerName.trim()) {
+      setErrorMsg("Please enter your full name.");
+      return;
+    }
+    const digits = phone.replace(/\D/g, "");
+    if (digits.length < 10) {
+      setErrorMsg("Please enter a valid 10-digit mobile number.");
+      return;
+    }
+    if (!pickupDate) {
+      setErrorMsg("Please select a pickup date.");
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      await submitBookingNotification({
+        car,
+        customerName: customerName.trim(),
+        phone: phone.trim(),
+        plan,
+        pickupDate,
+        returnDate,
+        pickupLocation: pickupLocation.trim() || "Jalore Main Branch",
+        notes: notes.trim(),
+      });
+      setSubmitted(true);
+    } catch (err) {
+      console.error("Booking notification submit error:", err);
+      setErrorMsg("Could not save booking to database. Please try again or confirm via WhatsApp.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
     <motion.div
-      className="fixed inset-0 z-[90] grid place-items-center bg-slate-950/60 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-[90] grid place-items-center bg-slate-950/60 p-4 backdrop-blur-sm overflow-y-auto"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -982,12 +1034,13 @@ function BookingModal({ car, onClose }) {
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: 20, scale: 0.96 }}
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md rounded-[28px] bg-white p-7 shadow-2xl"
+        className="w-full max-w-md rounded-[28px] bg-white p-6 sm:p-7 shadow-2xl my-4"
       >
         <button
           type="button"
           onClick={onClose}
-          className="float-right grid h-9 w-9 place-items-center rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200"
+          aria-label="Close booking form"
+          className="float-right grid h-9 w-9 place-items-center rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors"
         >
           <X size={18} />
         </button>
@@ -995,47 +1048,163 @@ function BookingModal({ car, onClose }) {
           Quick Booking
         </span>
         <h2 className="mt-2 text-2xl font-black text-[#2D2866]">{car.name}</h2>
-        <p className="mt-1 text-sm text-slate-500">{car.branch}</p>
-        <div className="my-5 rounded-2xl bg-[#F8F7FC] p-4 border border-slate-100">
-          <p className="text-xs font-semibold text-slate-500">Starting at</p>
-          <p className="text-2xl font-black text-[#2D2866]">
-            ₹{money(plan === "Daily" ? car.dailyRate : car.hourlyRate)}
-            <span className="text-xs text-slate-500">/{plan === "Daily" ? "day" : "hr"}</span>
-          </p>
-        </div>
-        <label className="field-label">Select plan</label>
-        <div className="mb-4 grid grid-cols-2 rounded-xl bg-slate-100 p-1">
-          {["Daily", "Hourly"].map((x) => (
-            <button
-              type="button"
-              onClick={() => setPlan(x)}
-              key={x}
-              className={`rounded-lg py-2.5 text-sm font-bold transition-all ${
-                plan === x
-                  ? "bg-[#2D2866] text-white shadow-sm"
-                  : "text-slate-600 hover:text-slate-900"
-              }`}
-            >
-              {x}
-            </button>
-          ))}
-        </div>
-        <label className="field-label">Pickup date</label>
-        <div className="field-wrap">
-          <CalendarDays size={17} className="text-[#2D2866]" />
-          <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
-        </div>
-        <a
-          target="_blank"
-          rel="noreferrer"
-          href={waLink(message)}
-          className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-emerald-500 py-3.5 font-bold text-white hover:bg-emerald-600 shadow-md shadow-emerald-500/20"
-        >
-          <MessageCircle size={18} /> Confirm on WhatsApp
-        </a>
-        <p className="mt-3 text-center text-xs text-slate-400">
-          No payment required to check availability.
+        <p className="mt-1 text-xs font-semibold text-slate-500">
+          {car.branch} • ₹{money(rate)}/{plan === "Daily" ? "day" : "hr"}
         </p>
+
+        {submitted ? (
+          <div className="mt-6 rounded-2xl border border-emerald-200 bg-emerald-50 p-6 text-center">
+            <div className="mx-auto mb-3 grid h-12 w-12 place-items-center rounded-full bg-emerald-500 text-white shadow-md shadow-emerald-500/20">
+              <CircleCheck size={24} />
+            </div>
+            <h3 className="text-lg font-extrabold text-emerald-950">Booking Request Sent!</h3>
+            <p className="mt-2 text-xs leading-relaxed text-emerald-800">
+              Thank you, <strong>{customerName}</strong>. Your booking details for{" "}
+              <strong>{car.name}</strong> have been saved. Our Jalore team will contact you shortly on{" "}
+              <strong>{phone}</strong>.
+            </p>
+            <div className="mt-5 flex flex-col gap-2.5">
+              <a
+                target="_blank"
+                rel="noreferrer"
+                href={waLink(message)}
+                className="flex w-full items-center justify-center gap-2 rounded-full bg-emerald-600 py-3 text-sm font-bold text-white hover:bg-emerald-700 shadow-sm transition-all"
+              >
+                <MessageCircle size={17} /> Also Chat on WhatsApp
+              </a>
+              <button
+                type="button"
+                onClick={onClose}
+                className="w-full rounded-full border border-emerald-200 bg-white py-2.5 text-xs font-bold text-emerald-900 hover:bg-emerald-100/50 transition-colors"
+              >
+                Done
+              </button>
+            </div>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="mt-5 space-y-3.5">
+            <div>
+              <label className="field-label">Select plan</label>
+              <div className="grid grid-cols-2 rounded-xl bg-slate-100 p-1">
+                {["Daily", "Hourly"].map((x) => (
+                  <button
+                    type="button"
+                    onClick={() => setPlan(x)}
+                    key={x}
+                    className={`rounded-lg py-2 text-xs font-bold transition-all ${
+                      plan === x
+                        ? "bg-[#2D2866] text-white shadow-sm"
+                        : "text-slate-600 hover:text-slate-900"
+                    }`}
+                  >
+                    {x} (₹{money(x === "Daily" ? car.dailyRate : car.hourlyRate)}/
+                    {x === "Daily" ? "day" : "hr"})
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label className="field-label">Full Name *</label>
+                <div className="field-wrap">
+                  <Users size={15} className="text-[#2D2866] shrink-0" />
+                  <input
+                    type="text"
+                    required
+                    placeholder="Your name"
+                    value={customerName}
+                    onChange={(e) => setCustomerName(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="field-label">Mobile / WhatsApp *</label>
+                <div className="field-wrap">
+                  <Phone size={15} className="text-[#2D2866] shrink-0" />
+                  <input
+                    type="tel"
+                    required
+                    placeholder="10-digit number"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label className="field-label">Pickup Date *</label>
+                <div className="field-wrap">
+                  <CalendarDays size={15} className="text-[#2D2866] shrink-0" />
+                  <input
+                    type="date"
+                    required
+                    value={pickupDate}
+                    onChange={(e) => setPickupDate(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="field-label">Return Date</label>
+                <div className="field-wrap">
+                  <CalendarDays size={15} className="text-slate-400 shrink-0" />
+                  <input
+                    type="date"
+                    min={pickupDate || undefined}
+                    value={returnDate}
+                    onChange={(e) => setReturnDate(e.target.value)}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label className="field-label">Pickup Location / Delivery Area</label>
+              <div className="field-wrap">
+                <MapPin size={15} className="text-[#2D2866] shrink-0" />
+                <input
+                  type="text"
+                  placeholder="Jalore Main Branch / Doorstep address"
+                  value={pickupLocation}
+                  onChange={(e) => setPickupLocation(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="field-label">Notes (Optional)</label>
+              <div className="field-wrap">
+                <input
+                  type="text"
+                  placeholder="Any special request or pickup time"
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                />
+              </div>
+            </div>
+
+            {errorMsg && (
+              <p className="rounded-xl bg-rose-50 px-3 py-2 text-xs font-semibold text-rose-700 border border-rose-200">
+                {errorMsg}
+              </p>
+            )}
+
+            <button
+              type="submit"
+              disabled={submitting}
+              className="btn-primary mt-2 w-full justify-center py-3.5 text-sm disabled:opacity-60"
+            >
+              <span>{submitting ? "Submitting Request..." : "Submit Booking Request"}</span>
+              <ArrowRight size={16} />
+            </button>
+
+            <p className="pt-1 text-center text-[11px] text-slate-400">
+              No payment required now. Instant confirmation by our team.
+            </p>
+          </form>
+        )}
       </motion.div>
     </motion.div>
   );
