@@ -900,7 +900,7 @@ function Footer({ isFleetPage = false }) {
               ["Our Fleet", "/fleet"],
               ["How It Works", "#how"],
               ["Offers", "#offers"],
-              ["FAQs", "#faqs"],
+              ["FAQs", "/faqs"],
             ].map(([a, b]) => (
               <a
                 className="block transition hover:text-white cursor-pointer"
@@ -964,6 +964,14 @@ function Footer({ isFleetPage = false }) {
 function BookingModal({ car, searchPrefs, onClose }) {
   const initialPickup = searchPrefs?.pickupDate ? String(searchPrefs.pickupDate).slice(0, 10) : "";
   const initialReturn = searchPrefs?.returnDate ? String(searchPrefs.returnDate).slice(0, 10) : "";
+  const initialPickupTime =
+    searchPrefs?.pickupDate && String(searchPrefs.pickupDate).includes("T")
+      ? String(searchPrefs.pickupDate).slice(11, 16)
+      : "";
+  const initialReturnTime =
+    searchPrefs?.returnDate && String(searchPrefs.returnDate).includes("T")
+      ? String(searchPrefs.returnDate).slice(11, 16)
+      : "";
 
   const [customerName, setCustomerName] = useState("");
   const [phone, setPhone] = useState("");
@@ -973,7 +981,12 @@ function BookingModal({ car, searchPrefs, onClose }) {
   const [pickupLocation, setPickupLocation] = useState(
     searchPrefs?.location ? `${searchPrefs.location} Main Branch` : "Jalore Main Branch",
   );
-  const [notes, setNotes] = useState("");
+  const [notes, setNotes] = useState(() => {
+    if (initialPickupTime || initialReturnTime) {
+      return `Preferred time: ${initialPickupTime || "--:--"} to ${initialReturnTime || "--:--"}`;
+    }
+    return "";
+  });
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
@@ -1387,6 +1400,7 @@ export default function App() {
   }, []);
 
   const isFleetPage = pathname === "/fleet" || pathname.startsWith("/fleet");
+  const isFaqsPage = pathname === "/faqs" || pathname.startsWith("/faqs");
 
   return (
     <>
@@ -1434,6 +1448,47 @@ export default function App() {
               </div>
               <FleetSection onBook={setSelectedCar} fleet={fleet} isLiveFromDb={isLiveFromDb} />
             </motion.div>
+          ) : isFaqsPage ? (
+            <motion.div
+              key="faqs-page"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+            >
+              {/* Dedicated FAQs Page Header / Breadcrumb */}
+              <div className="border-b border-slate-100 bg-[#2D2866] py-10 px-6 text-white shadow-inner">
+                <div className="mx-auto flex max-w-7xl flex-col justify-between gap-4 sm:flex-row sm:items-center">
+                  <div>
+                    <div className="mb-2 flex items-center gap-2 text-xs font-semibold text-slate-300">
+                      <button
+                        type="button"
+                        onClick={() => navigate("/")}
+                        className="hover:text-white transition-colors cursor-pointer"
+                      >
+                        Home
+                      </button>
+                      <span>/</span>
+                      <span className="text-[#E8E7F2] font-bold">FAQs</span>
+                    </div>
+                    <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl text-white">
+                      Frequently Asked Questions
+                    </h1>
+                    <p className="mt-2 text-sm text-slate-300">
+                      Everything you need to know about self-drive car rental in Jalore, KYC documents, 300 km/day limits & doorstep delivery.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => navigate("/")}
+                    className="self-start rounded-full border border-white/20 bg-white/10 px-5 py-2.5 text-xs font-bold text-white transition-all hover:bg-white/20 hover:scale-105 active:scale-95 cursor-pointer shadow-sm"
+                  >
+                    ← Back to Home
+                  </button>
+                </div>
+              </div>
+              <FAQs />
+            </motion.div>
           ) : (
             <motion.div
               key="home-page"
@@ -1447,13 +1502,12 @@ export default function App() {
               <WhySection />
               <HowItWorks fleetCount={fleet.length} />
               <OffersReviews />
-              <FAQs />
               <LocationSection />
             </motion.div>
           )}
         </AnimatePresence>
       </main>
-      <Footer isFleetPage={isFleetPage} />
+      <Footer isFleetPage={isFleetPage || isFaqsPage} />
 
       {/* Floating WhatsApp Action (desktop) */}
       <motion.a

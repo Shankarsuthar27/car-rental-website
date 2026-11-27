@@ -61,7 +61,10 @@ export default function Navbar({ onOpenAuth }) {
       e.preventDefault();
       navigate(href);
     } else if (href.startsWith("#")) {
-      if (typeof window !== "undefined" && window.location.pathname.startsWith("/fleet")) {
+      if (
+        typeof window !== "undefined" &&
+        (window.location.pathname.startsWith("/fleet") || window.location.pathname.startsWith("/faqs"))
+      ) {
         e.preventDefault();
         navigate("/" + href);
         setTimeout(() => {
@@ -145,6 +148,13 @@ export default function Navbar({ onOpenAuth }) {
             className="relative py-1 text-sm font-medium text-slate-700 transition-colors hover:text-[#2D2866] after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:rounded-full after:bg-[#2D2866] after:transition-all after:duration-300 hover:after:w-full"
           >
             Contact Us
+          </a>
+          <a
+            href="/faqs"
+            onClick={(e) => handleNavClick(e, "/faqs")}
+            className="relative py-1 text-sm font-medium text-slate-700 transition-colors hover:text-[#2D2866] after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:rounded-full after:bg-[#2D2866] after:transition-all after:duration-300 hover:after:w-full"
+          >
+            FAQs
           </a>
 
           {/* Car Rental Dropdown */}
@@ -312,7 +322,7 @@ export default function Navbar({ onOpenAuth }) {
                     { label: "Fleets", href: "/fleet" },
                     { label: "About Us", href: "#how" },
                     { label: "Contact Us", href: "#footer" },
-                    { label: "FAQ's", href: "#faqs" },
+                    { label: "FAQs", href: "/faqs" },
                   ].map((link, idx) => (
                     <motion.a
                       key={link.label}
