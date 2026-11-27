@@ -477,6 +477,11 @@ export default function HeroSection({ onSearchSubmit }) {
       returnDate,
       duration: durationText,
     };
+    try {
+      sessionStorage.setItem("jsd_search_prefs", JSON.stringify(detail));
+    } catch {
+      // ignore storage errors
+    }
     if (onSearchSubmit) {
       onSearchSubmit(detail);
     }
