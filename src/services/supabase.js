@@ -116,6 +116,31 @@ export function transformVehicle(v, index = 0) {
 
   const fallbackImage = mapVehicleImage(v.brand, v.model, v.variant);
   const image = supabaseImage || fallbackImage;
+  const onTrip = isCarOnTrip(v.status);
+
+  // Determine booked / on-trip date range from active/running booking or vehicle meta/updated_at
+  let activeBooking = null;
+  if (Array.isArray(v.bookings) && v.bookings.length > 0) {
+    const ongoing = v.bookings
+      .filter((b) => {
+        const bs = String(b.status || "").trim().toLowerCase();
+        return bs && !["cancelled", "canceled", "completed", "returned"].includes(bs);
+      })
+      .sort((a, b) => new Date(b.return_datetime || 0) - new Date(a.return_datetime || 0));
+    activeBooking = ongoing[0] || v.bookings[0];
+  }
+  const bookedFrom =
+    activeBooking?.pickup_datetime ||
+    v.meta?.pickup_datetime ||
+    v.meta?.booked_from ||
+    (onTrip ? v.updated_at || null : null);
+  const bookedUntil =
+    activeBooking?.return_datetime ||
+    v.meta?.return_datetime ||
+    v.meta?.return_date ||
+    v.meta?.expected_return_date ||
+    v.meta?.booked_until ||
+    null;
 
   return {
     id: v.id || index + 1,
@@ -137,7 +162,9 @@ export function transformVehicle(v, index = 0) {
     supabaseImage,
     fallbackImage,
     status: v.status || "available",
-    isOnTrip: isCarOnTrip(v.status),
+    isOnTrip: onTrip,
+    bookedFrom,
+    bookedUntil,
     isActive: v.is_active !== false,
     registrationNumber: v.registration_number,
     features: Array.isArray(v.features) ? v.features : [],
@@ -155,7 +182,7 @@ export async function getVehiclesFromSupabase() {
     return null;
   }
   try {
-    const url = `${SUPABASE_URL}/rest/v1/vehicles?select=*,vehicle_images(*)&or=(is_active.eq.true,is_active.is.null)&order=daily_rate.asc`;
+    const url = `${SUPABASE_URL}/rest/v1/vehicles?select=*,vehicle_images(*),bookings(id,status,pickup_datetime,return_datetime)&or=(is_active.eq.true,is_active.is.null)&order=daily_rate.asc`;
     const response = await fetch(url, {
       method: "GET",
       cache: "no-store",
@@ -266,6 +293,7 @@ export async function submitBookingNotification({
   car,
   customerName,
   phone,
+  documentNumber,
   plan,
   pickupDate,
   returnDate,
@@ -281,7 +309,7 @@ export async function submitBookingNotification({
 
   const payload = {
     title: `New Booking Request: ${car.name}`,
-    body: `${customerName} (${phone}) wants to book ${car.name} (${plan} @ ₹${rate}/${rateUnit}) from ${pickupDate}${returnDate ? ` to ${returnDate}` : ""} • Location: ${pickupLocation || "Jalore Main Branch"}${notes ? ` • Note: ${notes}` : ""}`,
+    body: `${customerName} (${phone}) wants to book ${car.name} (${plan} @ ₹${rate}/${rateUnit}) from ${pickupDate}${returnDate ? ` to ${returnDate}` : ""} • Location: ${pickupLocation || "Jalore Main Branch"}${documentNumber ? ` • Doc/ID: ${documentNumber}` : ""}${notes ? ` • Note: ${notes}` : ""}`,
     type: "booking_created",
     is_read: false,
     data: {
@@ -290,6 +318,7 @@ export async function submitBookingNotification({
       registration_number: car.registrationNumber || null,
       customer_name: customerName,
       phone,
+      document_number: documentNumber || null,
       plan,
       rate,
       pickup_date: pickupDate,

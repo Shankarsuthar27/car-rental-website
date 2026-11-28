@@ -961,9 +961,41 @@ function Footer({ isFleetPage = false }) {
   );
 }
 
+function toLocalYmd(dateStr) {
+  if (!dateStr) return "";
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return String(dateStr).slice(0, 10);
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+function formatReadableDate(dateStr) {
+  if (!dateStr) return "";
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return String(dateStr).slice(0, 10);
+  return d.toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
+}
+
+function formatShortDayMonth(dateStr) {
+  if (!dateStr) return "";
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return String(dateStr).slice(0, 10);
+  return d.toLocaleDateString("en-IN", { day: "2-digit", month: "short" });
+}
+
 function BookingModal({ car, searchPrefs, onClose }) {
-  const initialPickup = searchPrefs?.pickupDate ? String(searchPrefs.pickupDate).slice(0, 10) : "";
-  const initialReturn = searchPrefs?.returnDate ? String(searchPrefs.returnDate).slice(0, 10) : "";
+  const tripStartYmd = car?.isOnTrip && car?.bookedFrom ? toLocalYmd(car.bookedFrom) : "";
+  const tripReturnYmd = car?.isOnTrip && car?.bookedUntil ? toLocalYmd(car.bookedUntil) : "";
+  // For ON TRIP cars, open/set booking pickup calendar from the car's return date (or bookedFrom if return date is not set)
+  const tripAvailableFromYmd = tripReturnYmd || tripStartYmd;
+
+  const initialPickup =
+    tripAvailableFromYmd ||
+    (searchPrefs?.pickupDate ? String(searchPrefs.pickupDate).slice(0, 10) : "");
+  const initialReturn =
+    (!car?.isOnTrip && searchPrefs?.returnDate ? String(searchPrefs.returnDate).slice(0, 10) : "");
   const initialPickupTime =
     searchPrefs?.pickupDate && String(searchPrefs.pickupDate).includes("T")
       ? String(searchPrefs.pickupDate).slice(11, 16)
@@ -975,6 +1007,7 @@ function BookingModal({ car, searchPrefs, onClose }) {
 
   const [customerName, setCustomerName] = useState("");
   const [phone, setPhone] = useState("");
+  const [documentNumber, setDocumentNumber] = useState("");
   const [plan, setPlan] = useState("Daily");
   const [pickupDate, setPickupDate] = useState(initialPickup);
   const [returnDate, setReturnDate] = useState(initialReturn);
@@ -992,22 +1025,33 @@ function BookingModal({ car, searchPrefs, onClose }) {
   const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
+    if (car?.isOnTrip) {
+      const nextFrom = car?.bookedUntil
+        ? toLocalYmd(car.bookedUntil)
+        : car?.bookedFrom
+          ? toLocalYmd(car.bookedFrom)
+          : "";
+      if (nextFrom) {
+        setPickupDate(nextFrom);
+      }
+      return;
+    }
     if (searchPrefs?.pickupDate) {
       setPickupDate(String(searchPrefs.pickupDate).slice(0, 10));
     }
     if (searchPrefs?.returnDate) {
       setReturnDate(String(searchPrefs.returnDate).slice(0, 10));
     }
-  }, [car?.id, searchPrefs]);
+  }, [car?.id, car?.isOnTrip, car?.bookedFrom, car?.bookedUntil, searchPrefs]);
 
   if (!car) return null;
 
   const rate = plan === "Daily" ? car.dailyRate : car.hourlyRate;
   const message = `Hi JSD, I submitted a booking request for ${car.name} (${plan} @ ₹${money(rate)}/${
     plan === "Daily" ? "day" : "hr"
-  }). Name: ${customerName || "-"}, Phone: ${phone || "-"}, Pickup: ${pickupDate || "-"}, Return: ${
-    returnDate || "-"
-  }, Location: ${pickupLocation}.`;
+  }). Name: ${customerName || "-"}, Phone: ${phone || "-"}, ID/Doc: ${
+    documentNumber || "-"
+  }, Pickup: ${pickupDate || "-"}, Return: ${returnDate || "-"}, Location: ${pickupLocation}.`;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -1022,6 +1066,10 @@ function BookingModal({ car, searchPrefs, onClose }) {
       setErrorMsg("Please enter a valid 10-digit mobile number.");
       return;
     }
+    if (!documentNumber.trim()) {
+      setErrorMsg("Please enter your Aadhaar Card, Driving Licence, or ID number.");
+      return;
+    }
     if (!pickupDate) {
       setErrorMsg("Please select a pickup date.");
       return;
@@ -1033,6 +1081,7 @@ function BookingModal({ car, searchPrefs, onClose }) {
         car,
         customerName: customerName.trim(),
         phone: phone.trim(),
+        documentNumber: documentNumber.trim(),
         plan,
         pickupDate,
         returnDate,
@@ -1071,13 +1120,34 @@ function BookingModal({ car, searchPrefs, onClose }) {
         >
           <X size={16} />
         </button>
-        <span className="inline-block rounded-full bg-[#E8E7F2] px-2.5 py-0.5 sm:px-3 sm:py-1 text-[10px] sm:text-xs font-bold uppercase tracking-wider text-[#2D2866]">
-          Quick Booking
-        </span>
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="inline-block rounded-full bg-[#E8E7F2] px-2.5 py-0.5 sm:px-3 sm:py-1 text-[10px] sm:text-xs font-bold uppercase tracking-wider text-[#2D2866]">
+            Quick Booking
+          </span>
+          {car.isOnTrip && (
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-600 px-2.5 py-0.5 sm:px-3 sm:py-1 text-[10px] sm:text-xs font-black uppercase tracking-wider text-white shadow-xs">
+              <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
+              <span>ON TRIP</span>
+            </span>
+          )}
+        </div>
         <h2 className="mt-1.5 sm:mt-2 text-lg sm:text-2xl font-black text-[#2D2866] leading-tight">{car.name}</h2>
         <p className="mt-0.5 sm:mt-1 text-[11px] sm:text-xs font-semibold text-slate-500">
           {car.branch} • ₹{money(rate)}/{plan === "Daily" ? "day" : "hr"}
         </p>
+
+        {car.isOnTrip && !submitted && (
+          <div className="mt-2.5 rounded-xl border border-amber-200 bg-amber-50 px-3 py-1.5 text-[11px] sm:text-xs font-semibold text-amber-900">
+            <strong className="font-bold">On Trip</strong>
+            {car.bookedFrom && car.bookedUntil
+              ? ` • ${formatShortDayMonth(car.bookedFrom)} - ${formatReadableDate(car.bookedUntil)} Return`
+              : car.bookedUntil
+                ? ` • ${formatReadableDate(car.bookedUntil)} Return`
+                : car.bookedFrom
+                  ? ` • From ${formatReadableDate(car.bookedFrom)}`
+                  : ""}
+          </div>
+        )}
 
         {submitted ? (
           <div className="mt-4 sm:mt-6 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 sm:p-6 text-center">
@@ -1170,6 +1240,7 @@ function BookingModal({ car, searchPrefs, onClose }) {
                   <input
                     type="date"
                     required
+                    min={tripAvailableFromYmd || undefined}
                     className="max-sm:!text-xs"
                     value={pickupDate}
                     onChange={(e) => setPickupDate(e.target.value)}
@@ -1188,6 +1259,21 @@ function BookingModal({ car, searchPrefs, onClose }) {
                     onChange={(e) => setReturnDate(e.target.value)}
                   />
                 </div>
+              </div>
+            </div>
+
+            <div>
+              <label className="field-label !mb-1">Aadhaar / Driving Licence / ID No. *</label>
+              <div className="field-wrap max-sm:!min-h-[38px] max-sm:!px-2.5">
+                <BadgeCheck size={14} className="text-[#2D2866] shrink-0" />
+                <input
+                  type="text"
+                  required
+                  placeholder="Aadhaar, Driving Licence or any ID number"
+                  className="max-sm:!text-xs"
+                  value={documentNumber}
+                  onChange={(e) => setDocumentNumber(e.target.value)}
+                />
               </div>
             </div>
 
